@@ -43,6 +43,21 @@ rand(){
     echo $(($num%$max+$min))  
 }
 
+config_client(){
+cat > /etc/wireguard/client.conf <<-EOF
+    [Interface]
+    PrivateKey = $c1
+    Address = 10.0.0.2/24 
+    DNS = 10.0.0.1
+
+    [Peer]
+    PublicKey = $s2
+    Endpoint = $serverip:$port
+    AllowedIPs = 0.0.0.0/0, ::0/0
+    PersistentKeepalive = 25
+EOF
+}
+
 #centos7安装wireguard
 wireguard_install(){
     sudo curl -Lo /etc/yum.repos.d/wireguard.repo https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-7/jdoss-wireguard-epel-7.repo
@@ -72,20 +87,8 @@ wireguard_install(){
     [Peer]
     PublicKey = $c2
     AllowedIPs = 10.0.0.2/32
-EOF    
-    cat > /etc/wireguard/client.conf <<-EOF
-    [Interface]
-    PrivateKey = $c1
-    Address = 10.0.0.2/24 
-    DNS = 10.0.0.1
-
-    [Peer]
-    PublicKey = $s2
-    Endpoint = $serverip:$port
-    AllowedIPs = 0.0.0.0/0, ::0/0
-    PersistentKeepalive = 25
-EOF
-    
+EOF 
+    config_client
     wg-quick up wg0
     systemctl enable wg-quick@wg0
 }
