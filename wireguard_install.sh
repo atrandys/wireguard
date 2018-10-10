@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#颜色
-Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
 #判断系统
 if [ ! -e '/etc/redhat-release' ]; then
 echo "仅支持centos7"
@@ -94,8 +92,8 @@ EOF
 #开始菜单
 start_menu(){
     clear
-    ${Green_font_prefix}1.${Font_color_suffix} 升级系统内核
-    ${Green_font_prefix}2.${Font_color_suffix} 安装wireguard
+    1. 升级系统内核
+    2. 安装wireguard
     echo
     read -p "请输入数字:" num
     case "$num" in
