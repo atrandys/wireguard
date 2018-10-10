@@ -92,8 +92,8 @@ EOF
 #开始菜单
 start_menu(){
     clear
-    1. 升级系统内核
-    2. 安装wireguard
+    echo "1. 升级系统内核"
+    echo "2. 安装wireguard"
     echo
     read -p "请输入数字:" num
     case "$num" in
