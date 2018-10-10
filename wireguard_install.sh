@@ -75,6 +75,14 @@ wireguard_install(){
     serverip=$(curl icanhazip.com)
     port=$(rand 10000 60000)
     chmod 777 -R /etc/wireguard
+    systemctl stop firewalld
+    systemctl disable firewalld
+    yum install -y iptables-services 
+    systemctl enable iptables 
+    systemctl start iptables 
+    iptables -F
+    iptables -t nat -A POSTROUTING -s 10.0.0.0/16 ! -d 10.0.0.0/16 -j MASQUERADE
+    service iptables save
     echo 1 > /proc/sys/net/ipv4/ip_forward
     echo "net.ipv4.ip_forward = 1" > /etc/sysctl.conf	
     cat > /etc/wireguard/wg0.conf <<-EOF
