@@ -98,7 +98,7 @@ start_menu(){
     ${Green_font_prefix}2.${Font_color_suffix} 安装wireguard
     ————————————————————————————————" && echo
     echo
-    read -p " 请输入数字:" num
+    read -p "请输入数字:" num
     case "$num" in
     	1)
 	update_kernel
@@ -111,7 +111,7 @@ start_menu(){
 	;;
 	*)
 	clear
-	echo -e "请输入正确数字"
+	echo "请输入正确数字"
 	sleep 5s
 	start_menu
 	;;
