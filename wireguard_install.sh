@@ -94,14 +94,14 @@ wireguard_install(){
 
 #开始菜单
 start_menu(){
-clear
- ${Green_font_prefix}1.${Font_color_suffix} 升级系统内核
- ${Green_font_prefix}2.${Font_color_suffix} 安装wireguard
-————————————————————————————————" && echo
-echo
-read -p " 请输入数字:" num
-case "$num" in
-	1)
+    clear
+    ${Green_font_prefix}1.${Font_color_suffix} 升级系统内核
+    ${Green_font_prefix}2.${Font_color_suffix} 安装wireguard
+    ————————————————————————————————" && echo
+    echo
+    read -p " 请输入数字:" num
+    case "$num" in
+    	1)
 	update_kernel
 	;;
 	2)
@@ -116,8 +116,10 @@ case "$num" in
 	sleep 5s
 	start_menu
 	;;
-esac
+    esac
 }
+
+start_menu
 
 
 
