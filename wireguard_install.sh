@@ -45,16 +45,16 @@ rand(){
 
 config_client(){
 cat > /etc/wireguard/client.conf <<-EOF
-    [Interface]
-    PrivateKey = $c1
-    Address = 10.0.0.2/24 
-    DNS = 10.0.0.1
+[Interface]
+PrivateKey = $c1
+Address = 10.0.0.2/24 
+DNS = 10.0.0.1
 
-    [Peer]
-    PublicKey = $s2
-    Endpoint = $serverip:$port
-    AllowedIPs = 0.0.0.0/0, ::0/0
-    PersistentKeepalive = 25
+[Peer]
+PublicKey = $s2
+Endpoint = $serverip:$port
+AllowedIPs = 0.0.0.0/0, ::0/0
+PersistentKeepalive = 25
 EOF
 
 }
@@ -85,17 +85,17 @@ wireguard_install(){
     service iptables save
     echo 1 > /proc/sys/net/ipv4/ip_forward
     echo "net.ipv4.ip_forward = 1" > /etc/sysctl.conf	
-    cat > /etc/wireguard/wg0.conf <<-EOF
-    [Interface]
-    PrivateKey = $s1
-    Address = 10.0.0.1/24 
-    PostUp   = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-    PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
-    ListenPort = $port
+cat > /etc/wireguard/wg0.conf <<-EOF
+[Interface]
+PrivateKey = $s1
+Address = 10.0.0.1/24 
+#PostUp   = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+#PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+ListenPort = $port
 
-    [Peer]
-    PublicKey = $c2
-    AllowedIPs = 10.0.0.2/32
+[Peer]
+PublicKey = $c2
+AllowedIPs = 10.0.0.2/32
 EOF
 
     config_client
