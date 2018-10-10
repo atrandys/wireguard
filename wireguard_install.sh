@@ -61,7 +61,7 @@ wireguard_install(){
     port=$(rand 10000 60000)
     chmod 777 -R /etc/wireguard
     echo 1 > /proc/sys/net/ipv4/ip_forward
-    echo "net.ipv4.ip_forward = 1" > /etc/sysctl.conf
+    echo "net.ipv4.ip_forward = 1" > /etc/sysctl.conf	
     cat > /etc/wireguard/wg0.conf <<-EOF
     [Interface]
     PrivateKey = $s1
