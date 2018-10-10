@@ -73,8 +73,7 @@ wireguard_install(){
     [Peer]
     PublicKey = $c2
     AllowedIPs = 10.0.0.2/32
-    EOF
-    
+EOF    
     cat > /etc/wireguard/client.conf <<-EOF
     [Interface]
     PrivateKey = $c1
@@ -86,7 +85,7 @@ wireguard_install(){
     Endpoint = $serverip:$port
     AllowedIPs = 0.0.0.0/0, ::0/0
     PersistentKeepalive = 25
-    EOF
+EOF
     
     wg-quick up wg0
     systemctl enable wg-quick@wg0
