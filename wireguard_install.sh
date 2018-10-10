@@ -18,7 +18,6 @@ sed -i "0,/enabled=0/s//enabled=1/" /etc/yum.repos.d/epel.repo
 
 #更新内核
 update_kernel(){
-    yum install -y wget
     rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
     rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm
     yum --disablerepo="*" --enablerepo="elrepo-kernel" list available
