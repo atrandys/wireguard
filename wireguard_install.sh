@@ -56,6 +56,7 @@ cat > /etc/wireguard/client.conf <<-EOF
     AllowedIPs = 0.0.0.0/0, ::0/0
     PersistentKeepalive = 25
 EOF
+
 }
 
 #centos7安装wireguard
@@ -87,7 +88,8 @@ wireguard_install(){
     [Peer]
     PublicKey = $c2
     AllowedIPs = 10.0.0.2/32
-EOF 
+EOF
+
     config_client
     wg-quick up wg0
     systemctl enable wg-quick@wg0
