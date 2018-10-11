@@ -111,6 +111,7 @@ start_menu(){
     clear
     echo "1. 升级系统内核"
     echo "2. 安装wireguard"
+    echo "3. 退出脚本"
     echo
     read -p "请输入数字:" num
     case "$num" in
