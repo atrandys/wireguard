@@ -35,7 +35,7 @@ update_kernel(){
 	fi
 }
 
-#生成随机端口
+#生成随机端口 
 rand(){
     min=$1
     max=$(($2-$min+1))
@@ -65,13 +65,11 @@ wireguard_install(){
     sudo yum install -y dkms gcc-c++ gcc-gfortran glibc-headers glibc-devel libquadmath-devel libtool systemtap systemtap-devel
     sudo yum -y install wireguard-dkms wireguard-tools
     mkdir /etc/wireguard
+    mkdir /etc/wireguard/user
+    mkdir /etc/wireguard/userkey
     cd /etc/wireguard
     wg genkey | tee sprivatekey | wg pubkey > spublickey
-    wg genkey | tee cprivatekey | wg pubkey > cpublickey
     s1=$(cat sprivatekey)
-    s2=$(cat spublickey)
-    c1=$(cat cprivatekey)
-    c2=$(cat cpublickey)
     serverip=$(curl icanhazip.com)
     port=$(rand 10000 60000)
     chmod 777 -R /etc/wireguard
@@ -94,12 +92,9 @@ PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j A
 ListenPort = $port
 DNS = 8.8.8.8
 MTU = 1420
-[Peer]
-PublicKey = $c2
-AllowedIPs = 10.0.0.2/32
 EOF
 
-    config_client
+    echo "$serverip,$port,1" > global
     wg-quick up wg0
     systemctl enable wg-quick@wg0
 }
@@ -107,9 +102,10 @@ EOF
 #开始菜单
 start_menu(){
     clear
+    echo "node节点安装脚本，首先升级内核，然后安装wireguard。"
     echo "1. 升级系统内核"
     echo "2. 安装wireguard"
-    echo "3. 退出脚本"
+    echo "0. 退出脚本"
     echo
     read -p "请输入数字:" num
     case "$num" in
@@ -119,7 +115,7 @@ start_menu(){
 	2)
 	wireguard_install
 	;;
-	3)
+	0)
 	exit 1
 	;;
 	*)
