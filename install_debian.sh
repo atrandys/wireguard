@@ -76,6 +76,7 @@ configure_wireguard()
 
 	mv /etc/wireguard/wg0.conf /etc/wireguard/wg0.conf.bak  2> /dev/null
 
+
 	cat > /etc/wireguard/wg0.conf <<-EOF
 	[Interface]
 	PrivateKey = $SERVER_PRIV
@@ -110,27 +111,105 @@ configure_wireguard()
 	systemctl enable wg-quick@wg0
 	wg-quick up wg0
 
+	mkdir -p /etc/wireguard/clients/default/
+	cp client.conf /etc/wireguard/clients/default/
+
 	show_client_conf
+
+	rm client.conf
 }
 
+add_peer() 
+{
+	read -p  "please input user name: "  peer_name
+
+	if [ -d /etc/wireguard/clients/$peer_name ]; then
+		echo "User Already exists"
+		return;
+	fi
+
+	subnet=$(cat /etc/wireguard/subnet)
+
+	ip=$subnet.$(expr $(cat /etc/wireguard/lastip | tr "." " " | awk '{print $4}') + 1)
+
+	wg genkey | tee client_priv | wg pubkey > client_pub
+
+	cat > client.conf <<-EOF
+	[Interface]
+	PrivateKey = $(cat client_priv)
+	Address = $ip/32
+	DNS = 8.8.8.8
+
+	[Peer]
+	AllowedIPs = 0.0.0.0/0
+	Endpoint = $(get_public_ip):$(cat /etc/wireguard/wg0.conf | grep ListenPort | awk '{ print $3}')
+	PublicKey = $(cat /etc/wireguard/server_pubkey)
+
+	EOF
+
+	wg set wg0 peer $(cat client_pub) allowed-ips $ip/32
+
+	echo "$peer_name $(cat client_priv) $ip" >> /etc/wireguard/peers
+	echo $ip > /etc/wireguard/lastip
+
+	wg-quick save wg0
+
+	mkdir -p /etc/wireguard/clients/$peer_name/
+	cp client.conf /etc/wireguard/clients/$peer_name/
+
+	show_client_conf
+	rm client.conf
+	rm client_*
+}
+
+
+delete_peer()
+{
+	read -p  "please input user name: "  peer_name
+
+	[ -d /etc/wireguard/clients/$peer_name ] || ( echo "user does not exists" ; return ;) 
+
+	cat /etc/wireguard/clients/$peer_name/client.conf  | grep "PrivateKey" | awk '{print $3}' > client_priv
+
+	wg set wg0 peer  $(cat /etc/wireguard/clients/$peer_name/client.conf  | grep "PrivateKey" | awk '{print $3}' | wg pubkey) remove 
+	wg-quick save wg0
+
+	rm -rf /etc/wireguard/clients/$peer_name
+}
+
+list_peer()
+{
+	cd /etc/wireguard/clients >/dev/null 2>/dev/null && ls && cd - 2>/dev/null 1>/dev/null
+}
 
 start_menu(){
     echo "========================="
     echo " 介绍：适用于Debian"
     echo " 作者：基于atrandys版本修改"
-    echo " 网站：www.atrandys.com"
+    echo " 网站：www.atrandys.com"Add peer
     echo " Youtube：atrandys"
     echo "========================="
     echo "1. 重新安装配置Wireguard"
-    echo "2. 退出脚本"
-    echo
+    echo "2. 增加用户"
+    echo "3. 删除用户"
+    echo "4. LIST USERS"
+    echo "5. 退出脚本"
     read -p "请输入数字:" num
     case "$num" in
     	1)
 		configure_wireguard
 	;;
 	2)
-		#wireguard_install
+		add_peer
+	;;
+	
+	3)
+		delete_peer
+	;;
+	4)
+		list_peer
+	;;
+	5)
 		exit 1
 	;;
 	*)
