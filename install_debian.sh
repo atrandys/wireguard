@@ -145,7 +145,7 @@ add_peer()
 	[Peer]
 	AllowedIPs = 0.0.0.0/0
 	Endpoint = $(get_public_ip):$(cat /etc/wireguard/wg0.conf | grep ListenPort | awk '{ print $3}')
-	PublicKey = $(cat /etc/wireguard/server_pubkey)
+	PublicKey = $(wg | grep 'public key:' | awk '{print $3}')
 
 	EOF
 
