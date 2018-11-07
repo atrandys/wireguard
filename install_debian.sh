@@ -8,15 +8,30 @@ SUBNET=192.168.100
 
 umask 077
 
+rand(){
+	min=$1
+	max=$(($2-$min+1))
+	num=$(cat /dev/urandom | head -n 10 | cksum | awk -F ' ' '{print $1}')
+	echo $(($num%$max+$min))  
+}
+
+
+get_public_ip()
+{
+	dig +short myip.opendns.com @resolver1.opendns.com
+}
+
+
+
 install_wireguard()
 {
 	wg && return;
 
 	echo "Install Wireguard"
-	echo "deb http://deb.debian.org/debian/ unstable main" &gt; /etc/apt/sources.list.d/unstable.list
-	printf 'Package: *\nPin: release a=unstable\nPin-Priority: 150\n' &gt; /etc/apt/preferences.d/limit-unstable
+	echo "deb http://deb.debian.org/debian/ unstable main"  > /etc/apt/sources.list.d/unstable.list
+	printf 'Package: *\nPin: release a=unstable\nPin-Priority: 150\n' >  /etc/apt/preferences.d/limit-unstable
 	apt update
-	apt install -y  wireguard resolvconf dig
+	apt install -y  wireguard resolvconf dnsutils
 }
 
 show_client_conf()
