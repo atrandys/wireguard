@@ -121,10 +121,10 @@ configure_wireguard()
 
 add_peer() 
 {
-	read -p  "please input user name: "  peer_name
+	read -p  "请输入要增加的用户名(英文+数字): "  peer_name
 
 	if [ -d /etc/wireguard/clients/$peer_name ]; then
-		echo "User Already exists"
+		echo "用户已经存在"
 		return;
 	fi
 
@@ -165,9 +165,9 @@ add_peer()
 
 delete_peer()
 {
-	read -p  "please input user name: "  peer_name
+	read -p  "请输入要删除的用户名: "  peer_name
 
-	[ -d /etc/wireguard/clients/$peer_name ] || ( echo "user does not exists" ; return ;) 
+	[ -d /etc/wireguard/clients/$peer_name ] || ( echo "用户不存在" ; return ;) 
 
 	cat /etc/wireguard/clients/$peer_name/client.conf  | grep "PrivateKey" | awk '{print $3}' > client_priv
 
@@ -175,6 +175,7 @@ delete_peer()
 	wg-quick save wg0
 
 	rm -rf /etc/wireguard/clients/$peer_name
+	echo "用户删除成功"
 }
 
 list_peer()
@@ -192,7 +193,7 @@ start_menu(){
     echo "1. 重新安装配置Wireguard"
     echo "2. 增加用户"
     echo "3. 删除用户"
-    echo "4. LIST USERS"
+    echo "4. 用户列表"
     echo "5. 退出脚本"
     read -p "请输入数字:" num
     case "$num" in
