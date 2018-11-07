@@ -63,8 +63,8 @@ configure_wireguard()
 	wg genkey | tee server_priv | wg pubkey > server_pub
 	wg genkey | tee client_priv | wg pubkey > client_pub
 
-	echo SUBNET > /etc/wireguard/subnet
-	echo SERVER_PUB > /etc/wireguard/server_pubkey
+	echo $SUBNET > /etc/wireguard/subnet
+	echo $SERVER_PUB > /etc/wireguard/server_pubkey
 	
 
 	SERVER_PUB=$(cat server_pub)
