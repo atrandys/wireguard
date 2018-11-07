@@ -57,7 +57,7 @@ configure_wireguard()
 {	
 	install_wireguard
 	wg-quick down wg0 2>/dev/null
-	
+	rm -rf /etc/wireguard/*
 	echo "正在获取服务器公网IP地址"
 	SERVER_PUBLIC_IP=$(get_public_ip)
 	wg genkey | tee server_priv | wg pubkey > server_pub
