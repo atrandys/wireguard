@@ -25,6 +25,7 @@ get_public_ip()
 
 install_wireguard()
 {
+	apt install -y dnsutils resolvconf
 	wg && return;
 
 	echo "Install Wireguard"
