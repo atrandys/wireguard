@@ -76,7 +76,7 @@ configure_wireguard()
 
 	mv /etc/wireguard/wg0.conf /etc/wireguard/wg0.conf.bak  2> /dev/null
 
-
+	ip = $SUBNET.2
 	cat > /etc/wireguard/wg0.conf <<-EOF
 	[Interface]
 	PrivateKey = $SERVER_PRIV
@@ -95,7 +95,7 @@ configure_wireguard()
 	cat > client.conf <<-EOF
 	[Interface]
 	PrivateKey = $CLIENT_PRIV
-	Address = $SUBNET.2/32
+	Address = $ip/32
 	DNS = 8.8.8.8
 
 
@@ -113,7 +113,7 @@ configure_wireguard()
 
 	mkdir -p /etc/wireguard/clients/default/
 	cp client.conf /etc/wireguard/clients/default/
-
+	echo $ip > /etc/wireguard/lastip
 	show_client_conf
 
 	rm client.conf
