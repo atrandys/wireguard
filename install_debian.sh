@@ -65,7 +65,6 @@ configure_wireguard()
 	wg genkey | tee client_priv | wg pubkey > client_pub
 
 	echo $SUBNET > /etc/wireguard/subnet
-	echo $SERVER_PUB > /etc/wireguard/server_pubkey
 	
 
 	SERVER_PUB=$(cat server_pub)
@@ -73,6 +72,8 @@ configure_wireguard()
 	CLIENT_PUB=$(cat client_pub)
 	CLIENT_PRIV=$(cat client_priv)
 
+	echo $SERVER_PUB > /etc/wireguard/server_pubkey
+	
 	PORT=$(rand 10000 60000)
 
 	mv /etc/wireguard/wg0.conf /etc/wireguard/wg0.conf.bak  2> /dev/null
