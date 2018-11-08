@@ -25,15 +25,24 @@ get_public_ip()
 
 install_wireguard()
 {
-	apt install -y dkms linux-headers-`uname -r`
-	apt install -y dnsutils resolvconf
-	wg && return;
+	if grep Debian /etc/issue ; then
+		apt install -y dkms linux-headers-`uname -r`
+		apt install -y dnsutils resolvconf
+		wg && return;
 
-	echo "Install Wireguard"
-	echo "deb http://deb.debian.org/debian/ unstable main"  > /etc/apt/sources.list.d/unstable.list
-	printf 'Package: *\nPin: release a=unstable\nPin-Priority: 150\n' >  /etc/apt/preferences.d/limit-unstable
-	apt update
-	apt install -y  wireguard resolvconf dnsutils
+		echo "Install Wireguard"
+		echo "deb http://deb.debian.org/debian/ unstable main"  > /etc/apt/sources.list.d/unstable.list
+		printf 'Package: *\nPin: release a=unstable\nPin-Priority: 150\n' >  /etc/apt/preferences.d/limit-unstable
+		apt update
+		apt install -y  wireguard resolvconf dnsutils
+	fi
+
+	if [ -f /etc/centos-release ] ; then
+		curl -Lo /etc/yum.repos.d/wireguard.repo https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-7/jdoss-wireguard-epel-7.repo
+		yum install -y epel-release
+		yum install -y wireguard-dkms wireguard-tools
+		yum install -y bind-utils
+	fi
 }
 
 show_client_conf()
