@@ -25,6 +25,7 @@ get_public_ip()
 
 install_wireguard()
 {
+	apt install -y dkms linux-headers-`uname -r`
 	apt install -y dnsutils resolvconf
 	wg && return;
 
