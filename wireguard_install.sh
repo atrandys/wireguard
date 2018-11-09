@@ -81,7 +81,7 @@ wireguard_install(){
     yum install -y iptables-services 
     systemctl enable iptables 
     systemctl start iptables 
-    iptables -F
+#    iptables -F
     service iptables save
     service iptables restart
     echo 1 > /proc/sys/net/ipv4/ip_forward
