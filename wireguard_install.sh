@@ -65,6 +65,7 @@ wireguard_install(){
     curl -Lo /etc/yum.repos.d/wireguard.repo https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-7/jdoss-wireguard-epel-7.repo
     yum install -y dkms gcc-c++ gcc-gfortran glibc-headers glibc-devel libquadmath-devel libtool systemtap systemtap-devel
     yum -y install wireguard-dkms wireguard-tools
+    yum install qrencode
     mkdir /etc/wireguard
     cd /etc/wireguard
     wg genkey | tee sprivatekey | wg pubkey > spublickey
@@ -107,6 +108,9 @@ EOF
     config_client
     wg-quick up wg0
     systemctl enable wg-quick@wg0
+    content=$(cat /etc/wireguard/client.conf)
+    echo "电脑端请下载client.conf，手机端可直接使用软件扫码"
+    echo "${content}" | qrencode -o - -t UTF8
 }
 
 #开始菜单
