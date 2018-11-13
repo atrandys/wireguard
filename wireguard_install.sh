@@ -110,7 +110,7 @@ EOF
     systemctl enable wg-quick@wg0
     content=$(cat /etc/wireguard/client.conf)
     echo "电脑端请下载client.conf，手机端可直接使用软件扫码"
-    echo "${content}" | qrencode -o - -t UTF8
+    echo "${content}" | qrencode -o - -t ANSI
 }
 
 #开始菜单
