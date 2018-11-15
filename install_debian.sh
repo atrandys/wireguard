@@ -186,7 +186,7 @@ add_peer_udp2raw()
 	PostDown = ip rule del to $SERVER_PUBLIC_IP table main; killall udp2raw ; iptables -D FORWARD -p tcp --tcp-flags SYN,RST SYN -o wg0 -j TCPMSS  --clamp-mss-to-pmtu ; sysctl  net.ipv4.ip_forward=0
 
 	[Peer]
-	AllowedIPs = 0.0.0.0/0,$lan_ip/24
+	AllowedIPs = 0.0.0.0/0
 	Endpoint = 127.0.0.1:$(cat /etc/wireguard/udp2raw_port)
 	PublicKey = $(wg | grep 'public key:' | awk '{print $3}')
 
