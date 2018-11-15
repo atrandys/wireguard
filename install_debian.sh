@@ -192,7 +192,7 @@ add_peer_udp2raw()
 
 	EOF
 
-	wg set wg0 peer $(cat client_pub) allowed-ips $ip/32
+	wg set wg0 peer $(cat client_pub) allowed-ips $ip/32,$lan_ip/24
 
 	echo "$peer_name $(cat client_priv) $ip" >> /etc/wireguard/peers
 	echo $ip > /etc/wireguard/lastip
