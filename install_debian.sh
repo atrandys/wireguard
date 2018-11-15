@@ -179,8 +179,8 @@ add_peer_udp2raw()
 	MTU = 1200
 	DNS = 8.8.8.8
 	PreUp = udp2raw -c -l0.0.0.0:$(cat /etc/wireguard/udp2raw_port) -r$SERVER_PUBLIC_IP:$(cat /etc/wireguard/udp2raw_port) -k $(cat /etc/wireguard/udp2raw_password) --raw-mode faketcp --cipher-mode xor -a > /var/log/udp2raw.log &
-	PostUp = ip rule add to $SERVER_PUBLIC_IP table main
-	PostDown = ip rule del to $SERVER_PUBLIC_IP table main; killall udp2raw
+	PostUp = ip rule add to $SERVER_PUBLIC_IP table main; iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -o wg0 -j TCPMSS  --clamp-mss-to-pmtu ; sysctl  net.ipv4.ip_forward=1
+	PostDown = ip rule del to $SERVER_PUBLIC_IP table main; killall udp2raw ; iptables -D FORWARD -p tcp --tcp-flags SYN,RST SYN -o wg0 -j TCPMSS  --clamp-mss-to-pmtu ; sysctl  net.ipv4.ip_forward=0
 
 	[Peer]
 	AllowedIPs = 0.0.0.0/0
