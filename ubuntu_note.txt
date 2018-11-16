@@ -1,0 +1,80 @@
+
+1、安装wireguard
+
+sudo add-apt-repository ppa:wireguard/wireguard
+sudo apt-get update
+sudo apt-get install wireguard
+
+2、开启ip转发
+
+sudo vi /etc/sysctl.conf
+
+在文件末尾增加 net.ipv4.ip_forward = 1
+
+3、生成配置
+
+cd /etc/wireguard
+
+wg genkey | tee sprivatekey | wg pubkey > spublickey
+
+wg genkey | tee cprivatekey | wg pubkey > cpublickey
+
+s1=$(cat sprivatekey)
+
+s2=$(cat spublickey)
+
+c1=$(cat cprivatekey)
+
+c2=$(cat cpublickey)
+
+serverip=$(curl icanhazip.com)
+
+下面整段复制执行
+
+sudo cat > /etc/wireguard/wg0.conf <<-EOF
+[Interface]
+PrivateKey = $s1
+Address = 10.0.0.1/24 
+PostUp   = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o ens4 -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o ens4 -j MASQUERADE
+ListenPort = 21333
+DNS = 8.8.8.8
+MTU = 1420
+
+[Peer]
+PublicKey = $c2
+AllowedIPs = 10.0.0.2/32
+EOF
+
+下面整段复制执行
+
+sudo cat > /etc/wireguard/client.conf <<-EOF
+[Interface]
+PrivateKey = $c1
+Address = 10.0.0.2/24 
+DNS = 8.8.8.8
+MTU = 1420
+
+[Peer]
+PublicKey = $s2
+Endpoint = $serverip:21333
+AllowedIPs = 0.0.0.0/0, ::0/0
+PersistentKeepalive = 25
+EOF
+
+4、安装可能需要的软件
+
+sudo apt install openresolv
+
+5、启动服务端
+
+sudo wg-quick up wg0
+
+6、将/etc/wireguard/下的client.conf传输到客户端电脑，并在tunsafe客户端使用client.conf。
+
+
+
+
+
+
+
