@@ -116,8 +116,11 @@ configure_wireguard()
 	PrivateKey = $SERVER_PRIV
 	Address = $SUBNET.1/24
 	PreUp = udp2raw -s -l0.0.0.0:$UDP2RAW_PORT -r127.0.0.1:$PORT -k $UDP2RAW_PASSWORD --raw-mode faketcp --cipher-mode xor -a > /var/log/udp2raw.log &
-	PostUp   = sysctl net.ipv4.ip_forward=1 ; iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-	PostDown = sysctl net.ipv4.ip_forward=0 ;iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE ; killall udp2raw
+	PostUp   = sysctl net.ipv4.ip_forward=1
+	PostUp   = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+	PostDown = sysctl net.ipv4.ip_forward=0 ;
+	PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+	PostDown = killall udp2raw
 	ListenPort = $PORT
 	#DNS = 8.8.8.8
 	MTU = 1200
@@ -182,8 +185,13 @@ add_peer_udp2raw()
 	MTU = 1200
 	DNS = 8.8.8.8
 	PreUp = udp2raw -c -l0.0.0.0:$(cat /etc/wireguard/udp2raw_port) -r$SERVER_PUBLIC_IP:$(cat /etc/wireguard/udp2raw_port) -k $(cat /etc/wireguard/udp2raw_password) --raw-mode faketcp --cipher-mode xor -a > /var/log/udp2raw.log &
-	PostUp = ip rule add to $SERVER_PUBLIC_IP table main; iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -o wg0 -j TCPMSS  --clamp-mss-to-pmtu ; sysctl  net.ipv4.ip_forward=1
-	PostDown = ip rule del to $SERVER_PUBLIC_IP table main; killall udp2raw ; iptables -D FORWARD -p tcp --tcp-flags SYN,RST SYN -o wg0 -j TCPMSS  --clamp-mss-to-pmtu ; sysctl  net.ipv4.ip_forward=0
+	PostUp = ip rule add to $SERVER_PUBLIC_IP table main
+	PostUp = iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -o wg0 -j TCPMSS  --clamp-mss-to-pmtu
+	PostUp =  sysctl net.ipv4.ip_forward=1
+	PostDown = killall udp2raw
+	PostDown = iptables -D FORWARD -p tcp --tcp-flags SYN,RST SYN -o wg0 -j TCPMSS  --clamp-mss-to-pmtu
+	PostDown = sysctl net.ipv4.ip_forward=0
+	PostDown = ip rule del to $SERVER_PUBLIC_IP table main
 
 	[Peer]
 	AllowedIPs = 0.0.0.0/0
