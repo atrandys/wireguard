@@ -184,14 +184,24 @@ add_peer_udp2raw()
 	Address = $ip/32
 	MTU = 1200
 	DNS = 8.8.8.8
+
 	PreUp = udp2raw -c -l0.0.0.0:$(cat /etc/wireguard/udp2raw_port) -r$SERVER_PUBLIC_IP:$(cat /etc/wireguard/udp2raw_port) -k $(cat /etc/wireguard/udp2raw_password) --raw-mode faketcp --cipher-mode xor -a > /var/log/udp2raw.log &
+	PostUp = iptables -A POSTROUTING -t mangle -p tcp --tcp-flags SYN,RST SYN -o wg0 -j TCPMSS  --clamp-mss-to-pmtu
+	PostUp = iptables -t mangle -A OUTPUT -m set --match-set gfwlist dst -j  MARK  --set-mark 2222
+	PostUp = iptables -t mangle -A PREROUTING -m set --match-set gfwlist dst -j  MARK  --set-mark 2222
+	PostUp = ip rule add fwmark 51820 lookup main
+	PostUp = ip rule add fwmark 2222 lookup 51820
+	PostUp = ip rule add to 8.8.8.8 lookup 51820
 	PostUp = ip rule add to $SERVER_PUBLIC_IP table main
-	PostUp = iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -o wg0 -j TCPMSS  --clamp-mss-to-pmtu
-	PostUp =  sysctl net.ipv4.ip_forward=1
-	PostDown = killall udp2raw
-	PostDown = iptables -D FORWARD -p tcp --tcp-flags SYN,RST SYN -o wg0 -j TCPMSS  --clamp-mss-to-pmtu
+	PostUp = ip rule add to $SUBNET.0/24 lookup 51820
+	PostUp = ip rule del not fwmark 51820 lookup 51820
+	PostUp = sysctl net.ipv4.ip_forward=1
+
+	PostDown = killall udp2raw || echo "no udp2raw"
+	PostDown = iptables -D POSTROUTING -t mangle -p tcp --tcp-flags SYN,RST SYN -o wg0 -j TCPMSS  --clamp-mss-to-pmtu
+	PostDown = iptables -t mangle -D OUTPUT -m set --match-set gfwlist dst -j  MARK  --set-mark 2222
+	PostDown = iptables -t mangle -D PREROUTING -m set --match-set gfwlist dst -j  MARK  --set-mark 2222
 	PostDown = sysctl net.ipv4.ip_forward=0
-	PostDown = ip rule del to $SERVER_PUBLIC_IP table main
 
 	[Peer]
 	AllowedIPs = 0.0.0.0/0
