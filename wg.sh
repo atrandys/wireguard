@@ -293,10 +293,7 @@ list_peer()
 
 start_menu(){
     echo "========================="
-    echo " 介绍：适用于Debian"
     echo " 作者：基于atrandys版本修改"
-    echo " 网站：www.atrandys.com"Add peer
-    echo " Youtube：atrandys"
     echo "========================="
     echo "1. 重新安装配置Wireguard"
     echo "2. 增加用户"
