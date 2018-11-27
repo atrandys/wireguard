@@ -27,7 +27,7 @@ c1=$(cat cprivatekey)
 
 c2=$(cat cpublickey)
 
-serverip=$(curl icanhazip.com)
+serverip=$(curl ipv4.icanhazip.com)
 
 下面整段复制执行
 
