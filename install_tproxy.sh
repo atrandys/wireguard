@@ -76,7 +76,7 @@ config_dnsmasq()
         ipset create $GFWLIST_IPSET  hash:ip family inet timeout $GFWLIST_TIMEOUT
 	/usr/local/bin/gfwlist2dnsmasq.sh -d 8.8.8.8 -p 53 -s $GFWLIST_IPSET -o /etc/dnsmasq.d/gfwlist.conf
 	
-	echo "0 0 * * 0  cd /tmp && /usr/local/bin/gfwlist2dnsmasq.sh -s ss_rules_dst_forward_gfwlist -o /etc/dnsmasq.d/gfwlist.conf && /etc/init.d/dnsmasq restart> /dev/null"  > /tmp/crontab.root	
+	echo "0 0 * * 0  cd /tmp && /usr/local/bin/gfwlist2dnsmasq.sh -d 8.8.8.8 -p 53 -s $GFWLIST_IPSET -o /etc/dnsmasq.d/gfwlist.conf && /etc/init.d/dnsmasq restart> /dev/null"  > /tmp/crontab.root	
 
 	crontab /tmp/crontab.root
 	service dnsmasq restart

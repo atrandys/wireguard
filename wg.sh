@@ -196,7 +196,7 @@ add_peer_udp2raw()
 	PostUp = ip rule add to $SUBNET.0/24 lookup 51820
 	PostUp = ip rule del not fwmark 51820 lookup 51820
 	PostUp = sysctl net.ipv4.ip_forward=1
-
+	PostUp = systemctl restart dnsmasq
 	PostDown = killall udp2raw || echo "no udp2raw"
 	PostDown = iptables -D POSTROUTING -t mangle -p tcp --tcp-flags SYN,RST SYN -o wg0 -j TCPMSS  --clamp-mss-to-pmtu
 	PostDown = iptables -t mangle -D OUTPUT -m set --match-set gfwlist dst -j  MARK  --set-mark 2222
