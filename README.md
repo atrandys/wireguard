@@ -18,7 +18,7 @@ wget wget --no-check-certificate  https://raw.githubusercontent.com/ysy/wireguar
 ## 配置透明代理软路由
 目前透明代理软路由只在Ubuntu系统上测试过 <br>
 ### 客户端配置
-wget wget --no-check-certificate  https://raw.githubusercontent.com/ysy/wireguard/master/install_tproxy.sh && chmod +x install_tproxy.sh && ./install_tproxy.sh <br>
+wget --no-check-certificate  https://raw.githubusercontent.com/ysy/wireguard/master/install_tproxy.sh && chmod +x install_tproxy.sh && ./install_tproxy.sh <br>
 
 ### 服务器端配置
 选择 3. 增加用户(udp2raw配置) <br>
