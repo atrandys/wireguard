@@ -186,6 +186,7 @@ add_peer_udp2raw()
 	DNS = 8.8.8.8
 
 	PreUp = udp2raw -c -l0.0.0.0:$(cat /etc/wireguard/udp2raw_port) -r$SERVER_PUBLIC_IP:$(cat /etc/wireguard/udp2raw_port) -k $(cat /etc/wireguard/udp2raw_password) --raw-mode faketcp --cipher-mode xor -a > /var/log/udp2raw.log &
+	PreUp = ipset create gfwlist hash:ip family inet timeout 3600 || echo "gfwlist create" > /dev/null
 	PostUp = iptables -A POSTROUTING -t mangle -p tcp --tcp-flags SYN,RST SYN -o wg0 -j TCPMSS  --clamp-mss-to-pmtu
 	PostUp = iptables -t mangle -A OUTPUT -m set --match-set gfwlist dst -j  MARK  --set-mark 2222
 	PostUp = iptables -t mangle -A PREROUTING -m set --match-set gfwlist dst -j  MARK  --set-mark 2222
