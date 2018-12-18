@@ -74,7 +74,7 @@ EOF
 
 udp_install(){
     
-    #下载客户端脚本
+#下载客户端脚本
     curl -o /etc/wireguard/client/start.bat https://raw.githubusercontent.com/atrandys/onekeyopenvpn/master/client_pre.bat
     curl -o /etc/wireguard/client/stop.bat https://raw.githubusercontent.com/atrandys/onekeyopenvpn/master/client_down.bat
     
@@ -85,11 +85,24 @@ udp_install(){
     curl -o udp2raw https://raw.githubusercontent.com/atrandys/onekeyopenvpn/master/udp2raw
     chmod +x speederv2 udp2raw
     
+    #启动udpspeeder和udp2raw
+    nohup ./speederv2 -s -l0.0.0.0:9999 -r127.0.0.1:1194 -f2:4 --mode 0 --timeout 0 >speeder.log 2>&1 &
+    nohup ./udp2raw -s -l0.0.0.0:9898 -r 127.0.0.1:9999  --raw-mode faketcp  -a -k passwd >udp2raw.log 2>&1 &
     
-
-#启动udpspeeder和udp2raw
+#增加自启动脚本
+cat > /etc/rc.d/init.d/autoudp<<-EOF
+#!/bin/sh
+#chkconfig: 2345 80 90
+#description:autoudp
+cd /usr/src/udp
 nohup ./speederv2 -s -l0.0.0.0:9999 -r127.0.0.1:1194 -f2:4 --mode 0 --timeout 0 >speeder.log 2>&1 &
 nohup ./udp2raw -s -l0.0.0.0:9898 -r 127.0.0.1:9999  --raw-mode faketcp  -a -k passwd >udp2raw.log 2>&1 &
+EOF
+
+#设置脚本权限
+    chmod +x /etc/rc.d/init.d/autoudp
+    chkconfig --add autoudp
+    chkconfig autoudp on
 }
 
 #centos7安装wireguard
@@ -99,6 +112,7 @@ wireguard_install(){
     yum -y install wireguard-dkms wireguard-tools
     yum -y install qrencode
     mkdir /etc/wireguard
+    mkdir /etc/wireguard/client
     cd /etc/wireguard
     wg genkey | tee sprivatekey | wg pubkey > spublickey
     wg genkey | tee cprivatekey | wg pubkey > cpublickey
