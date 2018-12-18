@@ -3,11 +3,11 @@
 #wg+udpspeeder+udp2raw，fec:游戏场景
 
 if [ ! -e '/etc/redhat-release' ]; then
-echo "仅支持centos7"
+echo -e "\033[37;41m仅支持centos7\033[0m"
 exit
 fi
 if  [ -n "$(grep ' 6\.' /etc/redhat-release)" ] ;then
-echo "仅支持centos7"
+echo -e "\033[37;41m仅支持centos7\033[0m"
 exit
 fi
 
@@ -31,7 +31,7 @@ update_kernel(){
     read -p "需要重启VPS，再次执行脚本选择安装wireguard，是否现在重启 ? [Y/n] :" yn
 	[ -z "${yn}" ] && yn="y"
 	if [[ $yn == [Yy] ]]; then
-		echo -e "VPS 重启中..."
+		echo -e "\033[37;41mVPS 重启中...\033[0m"
 		reboot
 	fi
 }
@@ -46,13 +46,13 @@ rand(){
 
 wireguard_update(){
     yum update -y wireguard-dkms wireguard-tools
-    echo "更新完成"
+    echo -e "\033[37;41m更新完成\033[0m"
 }
 
 wireguard_remove(){
     yum remove -y wireguard-dkms wireguard-tools
     rm -rf /etc/wireguard/
-    echo "卸载完成"
+    echo -e "\033[37;41m卸载完成\033[0m"
 }
 
 config_client(){
@@ -121,7 +121,7 @@ EOF
     wg-quick up wg0
     systemctl enable wg-quick@wg0
     content=$(cat /etc/wireguard/client.conf)
-    echo "电脑端请下载client.conf，手机端可直接使用软件扫码"
+    echo -e "\033[37;41m电脑端请下载client.conf，手机端可直接使用软件扫码\033[0m"
     echo "${content}" | qrencode -o - -t UTF8
 }
 
@@ -166,7 +166,7 @@ start_menu(){
     ;;
     *)
     clear
-    echo "请输入正确数字"
+    echo -e "请输入正确数字"
     sleep 2s
     start_menu
     ;;
