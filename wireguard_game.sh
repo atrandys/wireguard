@@ -128,13 +128,13 @@ EOF
 #开始菜单
 start_menu(){
     clear
-    echo -e "\033[37;41m ====================================\033[0m"
-    echo -e "\033[37;41m 介绍：wireguard+udpspeeder+udp2raw  \033[0m"
-    echo -e "\033[37;41m 系统：CentOS7                       \033[0m"
-    echo -e "\033[37;41m 作者：atrandys                      \033[0m"
-    echo -e "\033[37;41m 网站：www.atrandys.com              \033[0m"
-    echo -e "\033[37;41m Youtube：atrandys                   \033[0m"
-    echo -e "\033[37;41m ====================================\033[0m"
+    echo -e "\033[43;42m ====================================\033[0m"
+    echo -e "\033[43;42m 介绍：wireguard+udpspeeder+udp2raw  \033[0m"
+    echo -e "\033[43;42m 系统：CentOS7                       \033[0m"
+    echo -e "\033[43;42m 作者：atrandys                      \033[0m"
+    echo -e "\033[43;42m 网站：www.atrandys.com              \033[0m"
+    echo -e "\033[43;42m Youtube：atrandys                   \033[0m"
+    echo -e "\033[43;42m ====================================\033[0m"
     echo
     echo -e "\033[0;33m 1. 升级系统内核(必需)\033[0m"
     echo -e "\033[0;33m 2. 安装wireguard+udpspeeder+udp2raw\033[0m"
