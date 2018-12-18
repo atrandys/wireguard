@@ -135,40 +135,41 @@ start_menu(){
     echo -e "\033[37;41m 网站：www.atrandys.com              \033[0m"
     echo -e "\033[37;41m Youtube：atrandys                   \033[0m"
     echo -e "\033[37;41m ====================================\033[0m"
-    echo "1. 升级系统内核"
-    echo "2. 安装wireguard"
-    echo "3. 升级wireguard"
-    echo "4. 卸载wireguard"
-    echo "5. 显示客户端二维码"
-    echo "0. 退出脚本"
+    echo
+    echo -e "\033[0;33m 1. 升级系统内核(必需)\033[0m"
+    echo -e "\033[0;33m 2. 安装wireguard+udpspeeder+udp2raw\033[0m"
+    echo " 3. 升级wireguard"
+    echo " 4. 卸载wireguard"
+    echo " 5. 显示客户端二维码"
+    echo " 0. 退出脚本"
     echo
     read -p "请输入数字:" num
     case "$num" in
     1)
-	  update_kernel
-	  ;;
-	  2)
-  	wireguard_install
-	  ;;
-	  3)
-	  wireguard_update
-	  ;;
-	  4)
-	  wireguard_remove
-	  ;;
-	  5)
-	  content=$(cat /etc/wireguard/client.conf)
+    update_kernel
+    ;;
+    2)
+    wireguard_install
+    ;;
+    3)
+    wireguard_update
+    ;;
+    4)
+    wireguard_remove
+    ;;
+    5)
+    content=$(cat /etc/wireguard/client.conf)
     echo "${content}" | qrencode -o - -t UTF8
-	  ;;
-	  0)
-	  exit 1
-  	;;
-	  *)
-	  clear
-	  echo "请输入正确数字"
-	  sleep 2s
-	  start_menu
-	  ;;
+    ;;
+    0)
+    exit 1
+    ;;
+    *)
+    clear
+    echo "请输入正确数字"
+    sleep 2s
+    start_menu
+    ;;
     esac
 }
 
