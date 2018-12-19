@@ -72,7 +72,7 @@ cat > run.sh <<-EOF
 #! /bin/sh
 while true
 do
-$@
+\$@
 sleep 1
 done
 EOF  
