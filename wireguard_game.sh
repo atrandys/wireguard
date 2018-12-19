@@ -73,7 +73,7 @@ udp_install(){
     password=$(randpwd)
     nohup ./speederv2 -s -l127.0.0.1:23333 -r127.0.0.1:$port -f2:4 --mode 0 -q1 >speeder.log 2>&1 &
     nohup ./udp2raw -s -l0.0.0.0:$udpport -r 127.0.0.1:23333  --raw-mode faketcp  -a -k $password >udp2raw.log 2>&1 &
-    echo -e "输入你客户端电脑的默认网关，打开cmd，使用ipconfig命令查看"
+    echo -e "\033[37;41m输入你客户端电脑的默认网关，打开cmd，使用ipconfig命令查看\033[0m"
     read -p "例如：192.168.1.1" ugateway
 
 cat > /etc/wireguard/client/client.conf <<-EOF
