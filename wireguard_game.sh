@@ -74,7 +74,7 @@ udp_install(){
     nohup ./speederv2 -s -l127.0.0.1:23333 -r127.0.0.1:$port -f2:4 --mode 0 -q1 >speeder.log 2>&1 &
     nohup ./udp2raw -s -l0.0.0.0:$udpport -r 127.0.0.1:23333  --raw-mode faketcp  -a -k $password >udp2raw.log 2>&1 &
     echo -e "\033[37;41m输入你客户端电脑的默认网关，打开cmd，使用ipconfig命令查看\033[0m"
-    read -p "例如：192.168.1.1" ugateway
+    read -p "比如192.168.1.1 ：" ugateway
 
 cat > /etc/wireguard/client/client.conf <<-EOF
 [Interface]
@@ -112,7 +112,6 @@ wireguard_install(){
     curl -Lo /etc/yum.repos.d/wireguard.repo https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-7/jdoss-wireguard-epel-7.repo
     yum install -y dkms gcc-c++ gcc-gfortran glibc-headers glibc-devel libquadmath-devel libtool systemtap systemtap-devel
     yum -y install wireguard-dkms wireguard-tools
-    yum -y install qrencode
     mkdir /etc/wireguard
     mkdir /etc/wireguard/client
     cd /etc/wireguard
