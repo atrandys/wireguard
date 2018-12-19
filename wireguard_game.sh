@@ -156,7 +156,7 @@ EOF
     udp_install
     wg-quick up wg0
     systemctl enable wg-quick@wg0
-    echo -e "\033[37;41m电脑端请下载client.conf，手机端可直接使用软件扫码\033[0m"
+    echo -e "\033[37;41m安装完毕，客户端配置文件：/etc/wireguard/client/client.conf\033[0m"
 }
 
 #开始菜单
