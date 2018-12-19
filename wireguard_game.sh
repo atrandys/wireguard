@@ -16,7 +16,7 @@ fi
 #更新内核
 update_kernel(){
 
-    yum -y install epel-release
+    yum -y install epel-release wget
     sed -i "0,/enabled=0/s//enabled=1/" /etc/yum.repos.d/epel.repo
     yum remove -y kernel-devel
     rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
@@ -64,8 +64,8 @@ udp_install(){
     #下载udpspeeder和udp2raw （amd64版）
     mkdir /usr/src/udp
     cd /usr/src/udp
-    curl -o speederv2 https://raw.githubusercontent.com/atrandys/atrandys/master/speederv2
-    curl -o udp2raw https://raw.githubusercontent.com/atrandys/atrandys/master/udp2raw
+    wget https://github.com/atrandys/wireguard/raw/master/speederv2
+    wget https://github.com/atrandys/wireguard/raw/master/udp2raw
     chmod +x speederv2 udp2raw
     
     #启动udpspeeder和udp2raw
