@@ -44,6 +44,11 @@ rand(){
     echo $(($num%$max+$min))  
 }
 
+randpwd(){
+    mpasswd=$(cat /dev/urandom | head -1 | md5sum | head -c 8)
+    echo ${mpasswd}  
+}
+
 wireguard_update(){
     yum update -y wireguard-dkms wireguard-tools
     echo -e "\033[37;41m更新完成\033[0m"
@@ -55,48 +60,45 @@ wireguard_remove(){
     echo -e "\033[37;41m卸载完成\033[0m"
 }
 
-config_client(){
-cat > /etc/wireguard/client.conf <<-EOF
+udp_install(){
+    #下载udpspeeder和udp2raw （amd64版）
+    mkdir /usr/src/udp
+    cd /usr/src/udp
+    curl -o speederv2 https://raw.githubusercontent.com/atrandys/atrandys/master/speederv2
+    curl -o udp2raw https://raw.githubusercontent.com/atrandys/atrandys/master/udp2raw
+    chmod +x speederv2 udp2raw
+    
+    #启动udpspeeder和udp2raw
+    udpport=$(rand 10000 60000)
+    password=$(randpwd)
+    nohup ./speederv2 -s -l127.0.0.1:23333 -r127.0.0.1:$port -f2:4 --mode 0 -q1 >speeder.log 2>&1 &
+    nohup ./udp2raw -s -l0.0.0.0:$udpport -r 127.0.0.1:23333  --raw-mode faketcp  -a -k $password >udp2raw.log 2>&1 &
+    echo -e "输入你客户端电脑的默认网关，打开cmd，使用ipconfig命令查看"
+    read -p "例如：192.168.1.1" ugateway
+
+cat > /etc/wireguard/client/client.conf <<-EOF
 [Interface]
 PrivateKey = $c1
+PostUp = route add $serverip mask 255.255.255.255 $ugateway METRIC 20 && start /b c:/udp/speederv2.exe -c -l127.0.0.1:2090 -r127.0.0.1:2091 --mode 0 -f2:4 --mode 0 -q1 && start /b udp2raw.exe -c -r$serverip:$udpport -l 127.0.0.1:2091 --raw-mode faketcp -k $password 
+PostDown = route delete $serverip && taskkill /im udp2raw.exe /f && taskkill /im speederv2.exe /f
 Address = 10.0.0.2/24 
 DNS = 8.8.8.8
 MTU = 1420
-
 [Peer]
 PublicKey = $s2
-Endpoint = $serverip:$port
+Endpoint = 127.0.0.1:2090
 AllowedIPs = 0.0.0.0/0, ::0/0
 PersistentKeepalive = 25
 EOF
 
-}
-
-udp_install(){
-    
-#下载客户端脚本
-    curl -o /etc/wireguard/client/start.bat https://raw.githubusercontent.com/atrandys/onekeyopenvpn/master/client_pre.bat
-    curl -o /etc/wireguard/client/stop.bat https://raw.githubusercontent.com/atrandys/onekeyopenvpn/master/client_down.bat
-    
-    #下载udpspeeder和udp2raw （amd64版）
-    mkdir /usr/src/udp
-    cd /usr/src/udp
-    curl -o speederv2 https://raw.githubusercontent.com/atrandys/onekeyopenvpn/master/speederv2
-    curl -o udp2raw https://raw.githubusercontent.com/atrandys/onekeyopenvpn/master/udp2raw
-    chmod +x speederv2 udp2raw
-    
-    #启动udpspeeder和udp2raw
-    nohup ./speederv2 -s -l0.0.0.0:9999 -r127.0.0.1:1194 -f2:4 --mode 0 --timeout 0 >speeder.log 2>&1 &
-    nohup ./udp2raw -s -l0.0.0.0:9898 -r 127.0.0.1:9999  --raw-mode faketcp  -a -k passwd >udp2raw.log 2>&1 &
-    
 #增加自启动脚本
 cat > /etc/rc.d/init.d/autoudp<<-EOF
 #!/bin/sh
 #chkconfig: 2345 80 90
 #description:autoudp
 cd /usr/src/udp
-nohup ./speederv2 -s -l0.0.0.0:9999 -r127.0.0.1:1194 -f2:4 --mode 0 --timeout 0 >speeder.log 2>&1 &
-nohup ./udp2raw -s -l0.0.0.0:9898 -r 127.0.0.1:9999  --raw-mode faketcp  -a -k passwd >udp2raw.log 2>&1 &
+nohup ./speederv2 -s -l127.0.0.1:23333 -r127.0.0.1:$port -f2:4 --mode 0 -q1 >speeder.log 2>&1 &
+nohup ./udp2raw -s -l0.0.0.0:$udpport -r 127.0.0.1:23333  --raw-mode faketcp  -a -k $password >udp2raw.log 2>&1 &
 EOF
 
 #设置脚本权限
@@ -151,12 +153,10 @@ PublicKey = $c2
 AllowedIPs = 10.0.0.2/32
 EOF
 
-    config_client
+    udp_install
     wg-quick up wg0
     systemctl enable wg-quick@wg0
-    content=$(cat /etc/wireguard/client.conf)
     echo -e "\033[37;41m电脑端请下载client.conf，手机端可直接使用软件扫码\033[0m"
-    echo "${content}" | qrencode -o - -t UTF8
 }
 
 #开始菜单
@@ -174,7 +174,6 @@ start_menu(){
     echo -e "\033[0;33m 2. 安装wireguard+udpspeeder+udp2raw\033[0m"
     echo " 3. 升级wireguard"
     echo " 4. 卸载wireguard"
-    echo " 5. 显示客户端二维码"
     echo " 0. 退出脚本"
     echo
     read -p "请输入数字:" num
@@ -190,10 +189,6 @@ start_menu(){
     ;;
     4)
     wireguard_remove
-    ;;
-    5)
-    content=$(cat /etc/wireguard/client.conf)
-    echo "${content}" | qrencode -o - -t UTF8
     ;;
     0)
     exit 1
