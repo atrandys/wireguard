@@ -66,18 +66,9 @@ udp_install(){
     cd /usr/src/udp
     wget https://github.com/atrandys/wireguard/raw/master/speederv2
     wget https://github.com/atrandys/wireguard/raw/master/udp2raw
-    chmod +x speederv2 udp2raw
-
-cat > run.sh <<-EOF
-#! /bin/sh
-while true
-do
-\$@
-sleep 1
-done
-EOF  
-
-    chmod +x run.sh
+    wget https://raw.githubusercontent.com/atrandys/wireguard/master/run.sh
+    chmod +x speederv2 udp2raw run.sh
+    
     #启动udpspeeder和udp2raw
     udpport=$(rand 10000 60000)
     password=$(randpwd)
