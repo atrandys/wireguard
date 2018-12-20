@@ -85,6 +85,7 @@ PostDown = route delete $serverip && taskkill /im udp2raw.exe /f && taskkill /im
 Address = 10.0.0.2/24 
 DNS = 8.8.8.8
 MTU = 1420
+
 [Peer]
 PublicKey = $s2
 Endpoint = 127.0.0.1:2090
