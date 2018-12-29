@@ -45,7 +45,7 @@ rand(){
 }
 
 randpwd(){
-    mpasswd=$(cat /dev/urandom | head -1 | md5sum | head -c 8)
+    mpasswd=$(cat /dev/urandom | head -1 | md5sum | head -c 4)
     echo ${mpasswd}  
 }
 
