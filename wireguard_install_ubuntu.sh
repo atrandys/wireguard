@@ -58,6 +58,7 @@ AllowedIPs = 0.0.0.0/0, ::0/0
 PersistentKeepalive = 25
 EOF
 
+    sudo apt-get install -y openresolv
     sudo apt-get install -y qrencode
 
 sudo cat > /etc/init.d/wgstart <<-EOF
