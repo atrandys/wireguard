@@ -16,7 +16,8 @@ wireguard_install(){
     sudo echo net.ipv4.ip_forward = 1 >> /etc/sysctl.conf
     sysctl -p
     echo "1"> /proc/sys/net/ipv4/ip_forward
-
+    
+    mkdir /etc/wireguard
     cd /etc/wireguard
     wg genkey | tee sprivatekey | wg pubkey > spublickey
     wg genkey | tee cprivatekey | wg pubkey > cpublickey
