@@ -57,7 +57,6 @@ AllowedIPs = 0.0.0.0/0, ::0/0
 PersistentKeepalive = 25
 EOF
 
-    sudo apt install -y openresolv
     sudo apt-get install -y qrencode
 
 sudo cat > /etc/init.d/wgstart <<-EOF
@@ -79,8 +78,9 @@ EOF
 
 wireguard_remove(){
 
-    apt-get remove -y wireguard
-    rm -rf /etc/wireguard
+    sudo wg-quick down wg0
+    sudo apt-get remove -y wireguard
+    sudo rm -rf /etc/wireguard
 
 }
 #开始菜单
