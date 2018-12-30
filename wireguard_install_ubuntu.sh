@@ -8,7 +8,11 @@ rand(){
 }
 
 wireguard_install(){
-    sudo apt-get install -y software-properties-common
+    version=$(cat /etc/os-release | awk -F '[".]' '$1=="VERSION="{print $2}')
+    if [ $version == 18 ]
+        sudo apt-get install -y software-properties-common
+        sudo apt-get install -y openresolv
+    fi
     sudo add-apt-repository -y ppa:wireguard/wireguard
     sudo apt-get update -y
     sudo apt-get install -y wireguard curl
@@ -58,7 +62,6 @@ AllowedIPs = 0.0.0.0/0, ::0/0
 PersistentKeepalive = 25
 EOF
 
-    sudo apt-get install -y openresolv
     sudo apt-get install -y qrencode
 
 sudo cat > /etc/init.d/wgstart <<-EOF
