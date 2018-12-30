@@ -11,7 +11,7 @@ wireguard_install(){
     sudo apt-get install -y software-properties-common
     sudo add-apt-repository -y ppa:wireguard/wireguard
     sudo apt-get update -y
-    sudo apt-get install -y wireguard
+    sudo apt-get install -y wireguard curl
 
     sudo echo net.ipv4.ip_forward = 1 >> /etc/sysctl.conf
     sysctl -p
