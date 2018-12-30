@@ -49,6 +49,7 @@ wireguard_update(){
 }
 
 wireguard_remove(){
+    wg-quick down wg0
     yum remove -y wireguard-dkms wireguard-tools
     rm -rf /etc/wireguard/
     echo "卸载完成"
