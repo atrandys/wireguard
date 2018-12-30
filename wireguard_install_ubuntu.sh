@@ -10,6 +10,7 @@ rand(){
 wireguard_install(){
     version=$(cat /etc/os-release | awk -F '[".]' '$1=="VERSION="{print $2}')
     if [ $version == 18 ]
+    then
         sudo apt-get install -y software-properties-common
         sudo apt-get install -y openresolv
     fi
