@@ -1,4 +1,3 @@
-# wireguard
-#### For CentOS7
+#一键脚本
 
 
