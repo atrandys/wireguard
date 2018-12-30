@@ -15,7 +15,7 @@ fi
 #更新内核
 update_kernel(){
 
-    yum -y install epel-release
+    yum -y install epel-release curl
     sed -i "0,/enabled=0/s//enabled=1/" /etc/yum.repos.d/epel.repo
     yum remove -y kernel-devel
     rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
