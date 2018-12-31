@@ -14,6 +14,10 @@ wireguard_install(){
         sudo apt-get install -y software-properties-common
         sudo apt-get install -y openresolv
     fi
+    if [ $version == 16 ]
+    then
+        sudo apt-get install -y software-properties-common
+    fi
     sudo add-apt-repository -y ppa:wireguard/wireguard
     sudo apt-get update -y
     sudo apt-get install -y wireguard curl
