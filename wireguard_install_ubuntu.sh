@@ -79,7 +79,7 @@ sudo wg-quick up wg0
 EOF
     sudo chmod 755 /etc/init.d/wgstart
     cd /etc/init.d
-    sudo update-rc.d wgstart defaults 90
+    sudo update-rc.d wgstart defaults 99
     sudo wg-quick up wg0
     
     content=$(cat /etc/wireguard/client.conf)
