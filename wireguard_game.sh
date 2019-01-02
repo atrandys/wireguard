@@ -167,7 +167,7 @@ add_user(){
     cd /etc/wireguard/client
     cp client.conf $newname.conf
     wg genkey | tee temprikey | wg pubkey > tempubkey
-    ipnum=$(grep Allowed  wg0.conf | tail -1 | awk -F '[ ./]' '{print $6}')
+    ipnum=$(grep Allowed /etc/wireguard/wg0.conf | tail -1 | awk -F '[ ./]' '{print $6}')
     newnum=$((10#${ipnum}+1))
     sed -i 's/^PrivateKey.*/PrivateKey = $(cat temprikey)/g' $newname.conf
     sed -i 's/^Address.*/Address = 10.0.0.$newnum/24/g' $newname.conf
@@ -179,7 +179,7 @@ PublicKey = $(cat tempubkey)
 AllowedIPs = 10.0.0.$newnum/32
 EOF
 
-    echo -e "\033[37;41添加完成，文件：/etc/wireguard/client/$newname.conf\033[0m"
+    echo -e "\033[37;41m添加完成，文件：/etc/wireguard/client/$newname.conf\033[0m"
 }
 
 #开始菜单
