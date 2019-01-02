@@ -162,7 +162,7 @@ EOF
 }
 
 add_user(){
-    echo -e "\033[37;41给新用户起个名字，不能和已有用户重复\033[0m"
+    echo -e "\033[37;41m给新用户起个名字，不能和已有用户重复\033[0m"
     read -p "请输入用户名：" newname
     cd /etc/wireguard/client
     cp client.conf $newname.conf
