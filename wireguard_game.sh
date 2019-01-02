@@ -161,6 +161,27 @@ EOF
     echo -e "\033[37;41m安装完毕，客户端配置文件：/etc/wireguard/client/client.conf\033[0m"
 }
 
+add_user(){
+    echo -e "\033[37;41给新用户起个名字，不能和已有用户重复\033[0m"
+    read -p "请输入用户名：" newname
+    cd /etc/wireguard/client
+    cp client.conf $newname.conf
+    wg genkey | tee temprikey | wg pubkey > tempubkey
+    ipnum=$(grep Allowed  wg0.conf | tail -1 | awk -F '[ ./]' '{print $6}')
+    newnum=$((10#${ipnum}+1))
+    sed -i 's/^PrivateKey.*/PrivateKey = $(cat temprikey)/g' $newname.conf
+    sed -i 's/^Address.*/Address = 10.0.0.$newnum/24/g' $newname.conf
+
+cat >> /etc/wireguard/wg0.conf <<-EOF
+
+[Peer]
+PublicKey = $(cat tempubkey)
+AllowedIPs = 10.0.0.$newnum/32
+EOF
+
+    echo -e "\033[37;41添加完成，文件：/etc/wireguard/client/$newname.conf\033[0m"
+}
+
 #开始菜单
 start_menu(){
     clear
@@ -176,6 +197,7 @@ start_menu(){
     echo -e "\033[0;33m 2. 安装wireguard+udpspeeder+udp2raw\033[0m"
     echo " 3. 升级wireguard"
     echo " 4. 卸载wireguard"
+    echo " 5. 增加用户"
     echo " 0. 退出脚本"
     echo
     read -p "请输入数字:" num
@@ -191,6 +213,9 @@ start_menu(){
     ;;
     4)
     wireguard_remove
+    ;;
+    5)
+    add_user
     ;;
     0)
     exit 1
