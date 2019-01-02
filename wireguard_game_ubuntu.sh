@@ -91,6 +91,7 @@ EOF
 udp_install(){
     #下载udpspeeder和udp2raw （amd64版）
     mkdir /usr/src/udp
+    mkdir /etc/wireguard/client
     cd /usr/src/udp
     wget https://github.com/atrandys/wireguard/raw/master/speederv2
     wget https://github.com/atrandys/wireguard/raw/master/udp2raw
