@@ -73,17 +73,6 @@ AllowedIPs = 0.0.0.0/0, ::0/0
 PersistentKeepalive = 25
 EOF
 
-if [ $version == 14 ]
-then
-
-sudo cat > /etc/init.d/wgstart <<-EOF
-#! /bin/bash
-#wgstart
-sudo wg-quick up wg0
-EOF
-
-else
-
 sudo cat > /etc/init.d/wgstart <<-EOF
 #! /bin/bash
 ### BEGIN INIT INFO
@@ -98,7 +87,6 @@ sudo cat > /etc/init.d/wgstart <<-EOF
 sudo wg-quick up wg0
 EOF
 
-fi
 
 
     sudo chmod 755 /etc/init.d/wgstart
@@ -150,19 +138,6 @@ EOF
 
 
 #增加自启动脚本
-if [ $version == 14 ]
-then
-
-cat > /etc/init.d/autoudp<<-EOF
-#! /bin/sh
-#autoudp
-cd /usr/src/udp
-nohup ./speederv2 -s -l127.0.0.1:23333 -r127.0.0.1:$port -f2:1 --mode 0 --timeout 0 >speeder.log 2>&1 &
-nohup ./run.sh ./udp2raw -s -l0.0.0.0:$udpport -r 127.0.0.1:23333  --raw-mode faketcp  -a -k $password >udp2raw.log 2>&1 &
-EOF
-
-else
-
 cat > /etc/init.d/autoudp<<-EOF
 #! /bin/sh
 ### BEGIN INIT INFO
@@ -179,7 +154,6 @@ nohup ./speederv2 -s -l127.0.0.1:23333 -r127.0.0.1:$port -f2:1 --mode 0 --timeou
 nohup ./run.sh ./udp2raw -s -l0.0.0.0:$udpport -r 127.0.0.1:23333  --raw-mode faketcp  -a -k $password >udp2raw.log 2>&1 &
 EOF
 
-fi
 
 
 #设置脚本权限
