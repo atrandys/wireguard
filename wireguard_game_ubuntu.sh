@@ -76,14 +76,22 @@ PersistentKeepalive = 25
 EOF
 
 sudo cat > /etc/init.d/wgstart <<-EOF
-#!/bin/bash
-#启动wg
+#! /bin/bash
+### BEGIN INIT INFO
+# Provides:		wgstart
+# Required-Start:	
+# Required-Stop:
+# Default-Start:	2 3 4 5
+# Default-Stop:		
+# Short-Description:	wgstart
+### END INIT INFO
+
 sudo wg-quick up wg0
 EOF
 
     sudo chmod 755 /etc/init.d/wgstart
     cd /etc/init.d
-    sudo update-rc.d wgstart defaults 98
+    sudo update-rc.d wgstart defaults
     udp_install
     sudo wg-quick up wg0
 }
@@ -124,8 +132,16 @@ EOF
 
 #增加自启动脚本
 cat > /etc/init.d/autoudp<<-EOF
-#!/bin/sh
-#description:autoudp
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:		autoudp
+# Required-Start:	
+# Required-Stop:	
+# Default-Start:	2 3 4 5
+# Default-Stop:		
+# Short-Description:	autoudp
+### END INIT INFO
+
 cd /usr/src/udp
 nohup ./speederv2 -s -l127.0.0.1:23333 -r127.0.0.1:$port -f2:1 --mode 0 --timeout 0 >speeder.log 2>&1 &
 nohup ./run.sh ./udp2raw -s -l0.0.0.0:$udpport -r 127.0.0.1:23333  --raw-mode faketcp  -a -k $password >udp2raw.log 2>&1 &
@@ -134,7 +150,7 @@ EOF
 #设置脚本权限
     sudo chmod 755 /etc/init.d/autoudp
     cd /etc/init.d
-    sudo update-rc.d autoudp defaults 99
+    sudo update-rc.d autoudp defaults
 }
 
 wireguard_remove(){
