@@ -14,9 +14,7 @@ wireguard_install(){
         sudo apt-get update -y
         sudo apt-get install -y software-properties-common
         sudo apt-get install -y openresolv
-    fi
-    if [ $version == 16 ]
-    then
+    else
         sudo apt-get update -y
         sudo apt-get install -y software-properties-common
     fi
