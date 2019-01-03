@@ -74,10 +74,10 @@ sudo cat > /etc/init.d/wgstart <<-EOF
 #! /bin/bash
 ### BEGIN INIT INFO
 # Provides:		wgstart
-# Required-Start:	
-# Required-Stop:
+# Required-Start:	$remote_fs $syslog
+# Required-Stop:    $remote_fs $syslog
 # Default-Start:	2 3 4 5
-# Default-Stop:		
+# Default-Stop:		0 1 6
 # Short-Description:	wgstart
 ### END INIT INFO
 sudo wg-quick up wg0
