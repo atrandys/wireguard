@@ -211,8 +211,8 @@ add_user(){
     wg genkey | tee temprikey | wg pubkey > tempubkey
     ipnum=$(grep Allowed /etc/wireguard/wg0.conf | tail -1 | awk -F '[ ./]' '{print $6}')
     newnum=$((10#${ipnum}+1))
-    sed -i "s/^PrivateKey.*$/PrivateKey = $(cat temprikey)/g" $newname.conf
-    sed -i "s/^Address.*$/Address = 10.0.0.$newnum\/24/g" $newname.conf
+    sed -i "s/^PrivateKey.*$:PrivateKey = $(cat temprikey)/g" $newname.conf
+    sed -i "s/^Address.*$:Address = 10.0.0.$newnum\/24/g" $newname.conf
 
 cat >> /etc/wireguard/wg0.conf <<-EOF
 
