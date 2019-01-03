@@ -155,7 +155,7 @@ then
 
 cat > /etc/init.d/autoudp<<-EOF
 #! /bin/sh
-#desc:autoudp
+#autoudp
 cd /usr/src/udp
 nohup ./speederv2 -s -l127.0.0.1:23333 -r127.0.0.1:$port -f2:1 --mode 0 --timeout 0 >speeder.log 2>&1 &
 nohup ./run.sh ./udp2raw -s -l0.0.0.0:$udpport -r 127.0.0.1:23333  --raw-mode faketcp  -a -k $password >udp2raw.log 2>&1 &
