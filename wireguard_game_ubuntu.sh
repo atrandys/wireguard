@@ -80,7 +80,7 @@ sudo cat > /etc/init.d/wgstart <<-EOF
 # Required-Start:	$remote_fs $syslog
 # Required-Stop:    $remote_fs $syslog
 # Default-Start:	2 3 4 5
-# Default-Stop:		
+# Default-Stop:		0 1 6
 # Short-Description:	wgstart
 ### END INIT INFO
 
@@ -145,7 +145,7 @@ cat > /etc/init.d/autoudp<<-EOF
 # Required-Start:    $remote_fs $syslog
 # Required-Stop:    $remote_fs $syslog
 # Default-Start:	2 3 4 5
-# Default-Stop:		
+# Default-Stop:		0 1 6
 # Short-Description:	autoudp
 ### END INIT INFO
 
