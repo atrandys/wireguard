@@ -75,6 +75,17 @@ AllowedIPs = 0.0.0.0/0, ::0/0
 PersistentKeepalive = 25
 EOF
 
+if [ $version == 14 ]
+then
+
+sudo cat > /etc/init.d/wgstart <<-EOF
+#! /bin/bash
+#desc:wgstart
+sudo wg-quick up wg0
+EOF
+
+else
+
 sudo cat > /etc/init.d/wgstart <<-EOF
 #! /bin/bash
 ### BEGIN INIT INFO
@@ -88,6 +99,9 @@ sudo cat > /etc/init.d/wgstart <<-EOF
 
 sudo wg-quick up wg0
 EOF
+
+fi
+
 
     sudo chmod 755 /etc/init.d/wgstart
     cd /etc/init.d
