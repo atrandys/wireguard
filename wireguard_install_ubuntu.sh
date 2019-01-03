@@ -73,13 +73,21 @@ EOF
     sudo apt-get install -y qrencode
 
 sudo cat > /etc/init.d/wgstart <<-EOF
-#!/bin/bash
-#启动wg
+#! /bin/bash
+### BEGIN INIT INFO
+# Provides:		wgstart
+# Required-Start:	
+# Required-Stop:
+# Default-Start:	2 3 4 5
+# Default-Stop:		
+# Short-Description:	wgstart
+### END INIT INFO
+
 
 sudo wg-quick up wg0
 
 EOF
-    sudo chmod 755 /etc/init.d/wgstart
+    sudo chmod +x /etc/init.d/wgstart
     cd /etc/init.d
     sudo update-rc.d wgstart defaults 99
     sudo wg-quick up wg0
