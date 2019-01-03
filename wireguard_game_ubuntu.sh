@@ -80,7 +80,7 @@ then
 
 sudo cat > /etc/init.d/wgstart <<-EOF
 #! /bin/bash
-#desc:wgstart
+#wgstart
 sudo wg-quick up wg0
 EOF
 
