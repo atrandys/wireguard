@@ -91,7 +91,13 @@ EOF
 
     sudo chmod 755 /etc/init.d/wgstart
     cd /etc/init.d
-    sudo update-rc.d wgstart defaults
+    if [ $version == 14 ]
+    then
+        sudo update-rc.d wgstart defaults 99
+    else
+        sudo update-rc.d wgstart defaults
+    fi
+    
     udp_install
     sudo wg-quick up wg0
 }
@@ -150,7 +156,12 @@ EOF
 #设置脚本权限
     sudo chmod 755 /etc/init.d/autoudp
     cd /etc/init.d
-    sudo update-rc.d autoudp defaults
+    if [ $version == 14 ]
+    then
+        sudo update-rc.d autoudp defaults 99
+    else
+        sudo update-rc.d autoudp defaults
+    fi
 }
 
 wireguard_remove(){
