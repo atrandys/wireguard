@@ -70,17 +70,6 @@ EOF
 
     sudo apt-get install -y qrencode
 
-if [ $version == 14 ]
-then
-
-sudo cat > /etc/init.d/wgstart <<-EOF
-#! /bin/bash
-#wgstart
-sudo wg-quick up wg0
-EOF
-
-else
-
 sudo cat > /etc/init.d/wgstart <<-EOF
 #! /bin/bash
 ### BEGIN INIT INFO
@@ -93,8 +82,6 @@ sudo cat > /etc/init.d/wgstart <<-EOF
 ### END INIT INFO
 sudo wg-quick up wg0
 EOF
-
-fi
 
     sudo chmod +x /etc/init.d/wgstart
     cd /etc/init.d
