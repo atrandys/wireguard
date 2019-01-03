@@ -89,7 +89,13 @@ sudo wg-quick up wg0
 EOF
     sudo chmod +x /etc/init.d/wgstart
     cd /etc/init.d
-    sudo update-rc.d wgstart defaults 99
+    if [ $version == 14 ]
+    then
+        sudo update-rc.d wgstart defaults 99
+    else
+        sudo update-rc.d wgstart defaults
+    fi
+    
     sudo wg-quick up wg0
     
     content=$(cat /etc/wireguard/client.conf)
