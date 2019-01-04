@@ -197,7 +197,7 @@ start_menu(){
     echo -e "\033[0;33m 2. 安装wireguard+udpspeeder+udp2raw\033[0m"
     echo " 3. 升级wireguard"
     echo " 4. 卸载wireguard"
-    echo " 5. 增加用户"
+    echo -e "\033[37;41m 5. 增加用户\033[0m"
     echo " 0. 退出脚本"
     echo
     read -p "请输入数字:" num
