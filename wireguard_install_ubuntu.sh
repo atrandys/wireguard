@@ -87,7 +87,7 @@ EOF
     cd /etc/init.d
     if [ $version == 14 ]
     then
-        sudo update-rc.d wgstart defaults 99
+        sudo update-rc.d wgstart defaults 90
     else
         sudo update-rc.d wgstart defaults
     fi
