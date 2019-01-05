@@ -136,6 +136,19 @@ AllowedIPs = 0.0.0.0/0, ::0/0
 PersistentKeepalive = 25
 EOF
 
+cat > /etc/wireguard/client/client_noudp.conf <<-EOF
+[Interface]
+PrivateKey = $c1
+Address = 10.0.0.2/24 
+DNS = 8.8.8.8
+MTU = 1200
+[Peer]
+PublicKey = $s2
+Endpoint = $serverip:$port
+AllowedIPs = 0.0.0.0/0, ::0/0
+PersistentKeepalive = 25
+EOF
+
 
 #增加自启动脚本
 cat > /etc/init.d/autoudp<<-EOF
@@ -192,8 +205,9 @@ cat >> /etc/wireguard/wg0.conf <<-EOF
 PublicKey = $(cat tempubkey)
 AllowedIPs = 10.0.0.$newnum/32
 EOF
-
+    wg set wg0 peer $(cat tempubkey) allowed-ips 10.0.0.$newnum/32
     echo -e "\033[37;41m添加完成，文件：/etc/wireguard/client/$newname.conf\033[0m"
+    rm -f temprikey tempubkey
 }
 
 #开始菜单
