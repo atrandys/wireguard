@@ -57,7 +57,8 @@ wireguard_update(){
 wireguard_remove(){
     yum remove -y wireguard-dkms wireguard-tools
     rm -rf /etc/wireguard/
-    echo -e "\033[37;41m卸载完成\033[0m"
+    rm -f /etc/rc.d/init.d/autoudp
+    echo -e "\033[37;41m卸载完成，建议重启服务器\033[0m"
 }
 
 udp_install(){
