@@ -185,6 +185,9 @@ wireguard_remove(){
     sudo wg-quick down wg0
     sudo apt-get remove -y wireguard
     sudo rm -rf /etc/wireguard
+    sudo rm -f /etc/init.d/wgstart
+    sudo rm -f /etc/init.d/autoudp
+    echo -e "\033[37;41m卸载完成，建议重启服务器\033[0m"
 
 }
 
