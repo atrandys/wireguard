@@ -58,21 +58,6 @@ PublicKey = $c2
 AllowedIPs = 10.0.0.2/32
 EOF
 
-
-sudo cat > /etc/wireguard/client.conf <<-EOF
-[Interface]
-PrivateKey = $c1
-Address = 10.0.0.2/24 
-DNS = 8.8.8.8
-MTU = 1420
-
-[Peer]
-PublicKey = $s2
-Endpoint = $serverip:$port
-AllowedIPs = 0.0.0.0/0, ::0/0
-PersistentKeepalive = 25
-EOF
-
 sudo cat > /etc/init.d/wgstart <<-EOF
 #! /bin/bash
 ### BEGIN INIT INFO
@@ -127,7 +112,7 @@ PostUp = mshta vbscript:CreateObject("WScript.Shell").Run("cmd /c route add $ser
 PostDown = route delete $serverip && taskkill /im udp2raw.exe /f && taskkill /im speederv2.exe /f
 Address = 10.0.0.2/24 
 DNS = 8.8.8.8
-MTU = 1200
+MTU = 1420
 
 [Peer]
 PublicKey = $s2
@@ -141,7 +126,7 @@ cat > /etc/wireguard/client/client_noudp.conf <<-EOF
 PrivateKey = $c1
 Address = 10.0.0.2/24 
 DNS = 8.8.8.8
-MTU = 1200
+MTU = 1420
 [Peer]
 PublicKey = $s2
 Endpoint = $serverip:$port
