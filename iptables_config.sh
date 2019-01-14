@@ -76,6 +76,17 @@ config_keyword(){
     iptables -A FORWARD -m string --string "twitch.tv" --algo bm -j DROP
     iptables -A FORWARD -m string --string "panda.tv" --algo bm -j DROP
     iptables -A FORWARD -m string --string "porn" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "renminbao.com" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "dajiyuan.com" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "bignews.org" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "creaders.net" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "rfa.org" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "internetfreedom.org" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "voanews.com" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "minghui.org" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "kanzhongguo.com" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "peacehall.com" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "twister" --algo bm -j DROP
     service iptables save
     echo "禁止关键字完毕"
 }
