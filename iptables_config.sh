@@ -34,6 +34,7 @@ config_mail(){
 
 #禁止关键字
 config_keyword(){
+    iptables -A FORWARD -m string --string "netflix.com" --algo bm -j DROP
     iptables -A FORWARD -m string --string "torrent" --algo bm -j DROP
     iptables -A FORWARD -m string --string ".torrent" --algo bm -j DROP
     iptables -A FORWARD -m string --string "peer_id=" --algo bm -j DROP
