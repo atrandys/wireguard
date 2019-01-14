@@ -35,6 +35,14 @@ config_mail(){
 #禁止关键字
 config_keyword(){
     iptables -A FORWARD -m string --string "netflix.com" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "vimeo.com" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "dailymotion.com" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "hulu.com" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "liveleak.com" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "vine.co" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "ustream.tv" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "metacafe.com" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "viewstr.com" --algo bm -j DROP
     iptables -A FORWARD -m string --string "torrent" --algo bm -j DROP
     iptables -A FORWARD -m string --string ".torrent" --algo bm -j DROP
     iptables -A FORWARD -m string --string "peer_id=" --algo bm -j DROP
