@@ -86,6 +86,18 @@ config_conn(){
     echo "限制连接数完毕"
 }
 
+#IP限速
+config_IP(){
+    echo "限制IP的速度，从10.0.0.2-254，限制100/sec"
+    for ((i=2; i<=254; i ++))
+    do
+	iptables -I FORWARD -d 10.0.0.$i/24 -j DROP
+    	iptables -I FORWARD -d 10.0.0.$i/24 -m limit --limit 100/sec -j ACCEPT 
+    done
+    service iptables save
+    echo "限制IP速度完毕"
+}
+
 #清空规则
 config_clear(){
     iptables -P INPUT ACCEPT
@@ -110,7 +122,8 @@ do
     echo "3. 禁止常用关键字"
     echo "4. 开放自定义端口"
     echo "5. 连接数限制"
-    echo "6. 清除所有规则"
+    echo "6. ip限速"
+    echo "7. 清除所有规则"
     echo "0. 退出"
     echo
     read -p "请输入数字:" num
@@ -130,7 +143,10 @@ do
         5)
 	config_conn
 	;;
-        6)
+	6)
+	config_IP
+	;;
+        7)
 	config_clear
 	;;
 	0)
