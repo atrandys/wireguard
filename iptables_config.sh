@@ -35,6 +35,13 @@ config_mail(){
 #禁止关键字
 config_keyword(){
     iptables -A FORWARD -m string --string "netflix.com" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "facebook.com.com" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "instagram.com" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "pixiv.net" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "whatsapp.com" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "telegram.com" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "tunsafe.com" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "reddit.com" --algo bm -j DROP
     iptables -A FORWARD -m string --string "vimeo.com" --algo bm -j DROP
     iptables -A FORWARD -m string --string "dailymotion.com" --algo bm -j DROP
     iptables -A FORWARD -m string --string "hulu.com" --algo bm -j DROP
@@ -68,6 +75,7 @@ config_keyword(){
     iptables -A FORWARD -m string --string "douyu.com" --algo bm -j DROP
     iptables -A FORWARD -m string --string "twitch.tv" --algo bm -j DROP
     iptables -A FORWARD -m string --string "panda.tv" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "porn" --algo bm -j DROP
     service iptables save
     echo "禁止关键字完毕"
 }
