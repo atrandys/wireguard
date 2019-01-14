@@ -91,8 +91,8 @@ config_IP(){
     echo "限制IP的速度，从10.0.0.2-254，限制100/sec"
     for ((i=2; i<=254; i ++))
     do
-	iptables -I FORWARD -d 10.0.0.$i/24 -j DROP
-    	iptables -I FORWARD -d 10.0.0.$i/24 -m limit --limit 100/sec -j ACCEPT 
+	iptables -I FORWARD -d 10.0.0.$i/32 -j DROP
+    	iptables -I FORWARD -d 10.0.0.$i/32 -m limit --limit 100/sec -j ACCEPT 
     done
     service iptables save
     echo "限制IP速度完毕"
