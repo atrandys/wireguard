@@ -187,7 +187,7 @@ add_peer_udp2raw()
 
 	PreUp = udp2raw -c -l0.0.0.0:$(cat /etc/wireguard/udp2raw_port) -r$SERVER_PUBLIC_IP:$(cat /etc/wireguard/udp2raw_port) -k $(cat /etc/wireguard/udp2raw_password) --raw-mode faketcp --cipher-mode xor -a > /var/log/udp2raw.log &
 	PreUp = ipset create gfwlist hash:ip family inet timeout 3600 || echo "gfwlist create" > /dev/null
-	PostUp = iptables -A POSTROUTING -t mangle -p tcp --tcp-flags SYN,RST SYN -o wg0 -j TCPMSS  --clamp-mss-to-pmtu
+	PostUp = iptables -A POSTROUTING -t mangle -p tcp --tcp-flags SYN,RST SYN -o %i -j TCPMSS  --clamp-mss-to-pmtu
 	PostUp = iptables -t mangle -A OUTPUT -m set --match-set gfwlist dst -j  MARK  --set-mark 2222
 	PostUp = iptables -t mangle -A PREROUTING -m set --match-set gfwlist dst -j  MARK  --set-mark 2222
 	PostUp = ip rule add fwmark 51820 lookup main
@@ -199,7 +199,7 @@ add_peer_udp2raw()
 	PostUp = sysctl net.ipv4.ip_forward=1
 	PostUp = systemctl restart dnsmasq
 	PostDown = killall udp2raw || echo "no udp2raw"
-	PostDown = iptables -D POSTROUTING -t mangle -p tcp --tcp-flags SYN,RST SYN -o wg0 -j TCPMSS  --clamp-mss-to-pmtu
+	PostDown = iptables -D POSTROUTING -t mangle -p tcp --tcp-flags SYN,RST SYN -o %i -j TCPMSS  --clamp-mss-to-pmtu
 	PostDown = iptables -t mangle -D OUTPUT -m set --match-set gfwlist dst -j  MARK  --set-mark 2222
 	PostDown = iptables -t mangle -D PREROUTING -m set --match-set gfwlist dst -j  MARK  --set-mark 2222
 	PostDown = sysctl net.ipv4.ip_forward=0
