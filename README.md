@@ -1,7 +1,7 @@
 # wireguard一键配置脚本 (含服务器端与客户端)
 
 ## 初次安装
-wget wget --no-check-certificate  https://raw.githubusercontent.com/ysy/wireguard/master/wg.sh && chmod +x wg.sh && ./wg.sh
+wget --no-check-certificate  https://raw.githubusercontent.com/ysy/wireguard/master/wg.sh && chmod +x wg.sh && ./wg.sh
 
 选择 1.重新安装配置Wireguard <br>
 配置完成后，会以红字显示第一个客户端配置文件的内容，拷贝到客户端或生成二维码即可使用。
