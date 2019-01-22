@@ -99,6 +99,7 @@ configure_wireguard()
 	CLIENT_PUB=$(cat client_pub)
 	CLIENT_PRIV=$(cat client_priv)
 
+	DEF_IFACE=`route | grep default | awk '{ print $8}'`
 	echo $SERVER_PUB > /etc/wireguard/server_pubkey
 	
 	PORT=$(rand 20000 60000)
@@ -117,9 +118,9 @@ configure_wireguard()
 	Address = $SUBNET.1/24
 	PreUp = udp2raw -s -l0.0.0.0:$UDP2RAW_PORT -r127.0.0.1:$PORT -k $UDP2RAW_PASSWORD --raw-mode faketcp --cipher-mode xor -a > /var/log/udp2raw.log &
 	PostUp   = sysctl net.ipv4.ip_forward=1
-	PostUp   = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+	PostUp   = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o ${DEF_IFACE}  -j MASQUERADE
 	PostDown = sysctl net.ipv4.ip_forward=0 ;
-	PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+	PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o ${DEF_IFACE}  -j MASQUERADE
 	PostDown = killall udp2raw
 	ListenPort = $PORT
 	#DNS = 8.8.8.8
