@@ -22,7 +22,8 @@ wget --no-check-certificate  https://raw.githubusercontent.com/ysy/wireguard/mas
 
 ### 服务器端配置
 选择 3. 增加用户(udp2raw配置) <br>
-输入用户名，再输入软路由下设的局域网地址段 (如: 192.168.0.0) <br>
+输入用户名，再输入软路由下设的局域网地址段 (如: 192.168.0.0) <br> 
+完成后，重启下wg0接口(wg-quick down wg0 && wg-quick up wg0)<br>
 脚本会自动生成客户端的wg配置文件，将其文件拷贝至软路由(Ubuntu系统）的 /etc/wireguard/wg0.conf <br>
 在软路由上运行  wg-quick up wg0  <br>
 需要将终端机的网关和DNS设为软路由的地址（如: 192.168.0.1 或 192.168.0.2 等) <br>
