@@ -224,6 +224,8 @@ add_peer_udp2raw()
 	show_client_conf
 	rm client.conf
 	rm client_*
+	wg-quick down wg0
+	wg-quick up wg0
 }
 
 
