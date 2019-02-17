@@ -158,7 +158,7 @@ start_menu(){
     wireguard_remove
     ;;
     4)
-    wireguard_remove
+    add_user
     ;;
     0)
     exit 1
