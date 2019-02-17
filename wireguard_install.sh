@@ -125,7 +125,26 @@ EOF
     echo "电脑端请下载client.conf，手机端可直接使用软件扫码"
     echo "${content}" | qrencode -o - -t UTF8
 }
+add_user(){
+    echo -e "\033[37;41m给新用户起个名字，不能和已有用户重复\033[0m"
+    read -p "请输入用户名：" newname
+    cd /etc/wireguard/
+    cp client.conf $newname.conf
+    wg genkey | tee temprikey | wg pubkey > tempubkey
+    ipnum=$(grep Allowed /etc/wireguard/wg0.conf | tail -1 | awk -F '[ ./]' '{print $6}')
+    newnum=$((10#${ipnum}+1))
+    sed -i 's%^PrivateKey.*$%'"PrivateKey = $(cat temprikey)"'%' $newname.conf
+    sed -i 's%^Address.*$%'"Address = 10.0.0.$newnum\/24"'%' $newname.conf
 
+cat >> /etc/wireguard/wg0.conf <<-EOF
+[Peer]
+PublicKey = $(cat tempubkey)
+AllowedIPs = 10.0.0.$newnum/32
+EOF
+    wg set wg0 peer $(cat tempubkey) allowed-ips 10.0.0.$newnum/32
+    echo -e "\033[37;41m添加完成，文件：/etc/wireguard/$newname.conf\033[0m"
+    rm -f temprikey tempubkey
+}
 #开始菜单
 start_menu(){
     clear
@@ -140,6 +159,7 @@ start_menu(){
     echo "3. 升级wireguard"
     echo "4. 卸载wireguard"
     echo "5. 显示客户端二维码"
+    echo "6. 增加用户"
     echo "0. 退出脚本"
     echo
     read -p "请输入数字:" num
@@ -159,6 +179,9 @@ start_menu(){
 	5)
 	content=$(cat /etc/wireguard/client.conf)
     	echo "${content}" | qrencode -o - -t UTF8
+	;;
+	6)
+	wireguard_remove
 	;;
 	0)
 	exit 1
