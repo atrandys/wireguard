@@ -181,7 +181,7 @@ start_menu(){
     	echo "${content}" | qrencode -o - -t UTF8
 	;;
 	6)
-	wireguard_remove
+	add_user
 	;;
 	0)
 	exit 1
