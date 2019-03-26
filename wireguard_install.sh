@@ -19,14 +19,24 @@ update_kernel(){
     sed -i "0,/enabled=0/s//enabled=1/" /etc/yum.repos.d/epel.repo
     yum remove -y kernel-devel
     rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
-    rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm
+    rpm -Uvh https://www.elrepo.org/elrepo-release-7.0-3.el7.elrepo.noarch.rpm
     yum --disablerepo="*" --enablerepo="elrepo-kernel" list available
     yum -y --enablerepo=elrepo-kernel install kernel-ml
     sed -i "s/GRUB_DEFAULT=saved/GRUB_DEFAULT=0/" /etc/default/grub
+    grub2-set-default 'CentOS Linux (5.0.4-1.el7.elrepo.x86_64) 7 (Core)'
     grub2-mkconfig -o /boot/grub2/grub.cfg
-    wget https://elrepo.org/linux/kernel/el7/x86_64/RPMS/kernel-ml-devel-4.19.1-1.el7.elrepo.x86_64.rpm
-    rpm -ivh kernel-ml-devel-4.19.1-1.el7.elrepo.x86_64.rpm
+    wget https://elrepo.org/linux/kernel/el7/x86_64/RPMS/kernel-ml-5.0.4-1.el7.elrepo.x86_64.rpm
+    rpm -ivh kernel-ml-5.0.4-1.el7.elrepo.x86_64.rpm
     yum -y --enablerepo=elrepo-kernel install kernel-ml-devel
+    echo "清理旧的内核及组件"
+    yum install yum-utils -y
+    package-cleanup --oldkernels --count=1
+    rpm -qa kernel\* |sort -V
+    rpm -e --nodeps kernel-tools
+    rpm -e --nodeps kernel-tools-libs 
+    rpm -e --nodeps kernel-headers
+    echo "安装最新的内核支持组件"
+    yum --enablerepo=elrepo-kernel install kernel-ml-devel kernel-ml-tools
     read -p "需要重启VPS，再次执行脚本选择安装wireguard，是否现在重启 ? [Y/n] :" yn
 	[ -z "${yn}" ] && yn="y"
 	if [[ $yn == [Yy] ]]; then
