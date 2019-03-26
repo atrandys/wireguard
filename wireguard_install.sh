@@ -1,14 +1,14 @@
 #!/bin/bash
 
 #判断系统
-if [ ! -e '/etc/redhat-release' ]; then
-echo "仅支持centos7"
-exit
-fi
-if  [ -n "$(grep ' 6\.' /etc/redhat-release)" ] ;then
-echo "仅支持centos7"
-exit
-fi
+#if [ ! -e '/etc/redhat-release' ]; then
+#echo "仅支持centos7"
+#exit
+#fi
+#if  [ -n "$(grep ' 6\.' /etc/redhat-release)" ] ;then
+#echo "仅支持centos7"
+#exit
+#fi
 
 
 
@@ -61,7 +61,7 @@ cat > /etc/wireguard/client.conf <<-EOF
 PrivateKey = $c1
 Address = 10.0.0.2/24 
 DNS = 8.8.8.8
-MTU = 1420
+MTU = 1280
 
 [Peer]
 PublicKey = $s2
@@ -90,32 +90,35 @@ wireguard_install(){
     port=$(rand 10000 60000)
     eth=$(ls /sys/class/net | awk '/^e/{print}')
     chmod 777 -R /etc/wireguard
-    systemctl stop firewalld
-    systemctl disable firewalld
-    yum install -y iptables-services 
-    systemctl enable iptables 
-    systemctl start iptables 
-    iptables -P INPUT ACCEPT
-    iptables -P OUTPUT ACCEPT
-    iptables -P FORWARD ACCEPT
-    iptables -F
-    service iptables save
-    service iptables restart
+    systemctl start firewalld
+    systemctl enable firewalld
+    #yum install -y iptables-services 
+    systemctl disable iptables 
+    systemctl stop iptables 
+    #iptables -P INPUT ACCEPT
+    #iptables -P OUTPUT ACCEPT
+    #iptables -P FORWARD ACCEPT
+    #iptables -F
+    #service iptables save
+    #service iptables restart
     echo 1 > /proc/sys/net/ipv4/ip_forward
     echo "net.ipv4.ip_forward = 1" > /etc/sysctl.conf	
+    firewall-cmd --permanent --add-rich-rule='rule family=ipv4 source address=10.0.0.0/24 masquerade'
+    firewall-cmd --permanent --direct --add-rule ipv4 filter FORWARD 0 -i wg0 -o $eth -j ACCEPT
+    firewall-cmd --permanent --add-port=$port/udp
+    firewall-cmd --permanent --add-masquerade
+    firewall-cmd --reload
 cat > /etc/wireguard/wg0.conf <<-EOF
 [Interface]
 PrivateKey = $s1
 Address = 10.0.0.1/24 
-PostUp   = echo 1 > /proc/sys/net/ipv4/ip_forward; iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o $eth -j MASQUERADE
-PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o $eth -j MASQUERADE
 ListenPort = $port
 DNS = 8.8.8.8
-MTU = 1420
+MTU = 1280
 
 [Peer]
 PublicKey = $c2
-AllowedIPs = 10.0.0.2/32
+AllowedIPs = 10.0.0.2/24
 EOF
 
     config_client
