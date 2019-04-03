@@ -69,9 +69,9 @@ config_client(){
 cat > /etc/wireguard/client.conf <<-EOF
 [Interface]
 PrivateKey = $c1
-Address = 10.0.0.2/24 
-DNS = 8.8.8.8
-MTU = 1280
+Address = 10.0.0.2/24, 2001:20:2333::666/28 
+DNS = 1.1.1.1, 2001:4860:4860::8888
+MTU = 1480
 
 [Peer]
 PublicKey = $s2
@@ -112,23 +112,40 @@ wireguard_install(){
     #service iptables save
     #service iptables restart
     echo 1 > /proc/sys/net/ipv4/ip_forward
-    echo "net.ipv4.ip_forward = 1" > /etc/sysctl.conf	
+    echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
+    #echo "net.ipv4.ip_forward = 1" > /etc/sysctl.conf
+    #echo "net.ipv6.conf.all.forwarding = 1" > /etc/sysctl.conf
+    #优化网络配置，开启转发，开启内置bbr
+    echo 'net.ipv4.tcp_fastopen=1' | tee -a /etc/sysctl.conf
+    echo 'net.ipv4.ip_forward = 1' | tee -a /etc/sysctl.conf
+    echo 'net.ipv6.conf.all.forwarding = 1' | tee -a /etc/sysctl.conf
+    echo 'vm.swappiness=10' | tee -a /etc/sysctl.conf
+    echo 'vm.dirty_ratio=15' | tee -a /etc/sysctl.conf
+    echo 'vm.dirty_background_ratio=10' | tee -a /etc/sysctl.conf
+    echo 'vm.dirty_expire_centisecs=1500' | tee -a /etc/sysctl.conf
+    echo 'vm.dirty_writeback_centisecs=300' | tee -a /etc/sysctl.conf
+    echo 'vm.vfs_cache_pressure=500' | tee -a /etc/sysctl.conf
+    echo 'net.core.default_qdisc=fq' | tee -a /etc/sysctl.conf
+    echo 'net.ipv4.tcp_congestion_control=bbr' | tee -a /etc/sysctl.conf
+    sysctl -p
     firewall-cmd --permanent --add-rich-rule='rule family=ipv4 source address=10.0.0.0/24 masquerade'
     firewall-cmd --permanent --direct --add-rule ipv4 filter FORWARD 0 -i wg0 -o $eth -j ACCEPT
+    firewall-cmd --permanent --add-rich-rule='rule family=ipv6 source address=2001:20:2333::1/28 masquerade'
+    firewall-cmd --permanent --direct --add-rule ipv6 filter FORWARD 0 -i wg0 -o $eth -j ACCEPT
     firewall-cmd --permanent --add-port=$port/udp
     firewall-cmd --permanent --add-masquerade
     firewall-cmd --reload
 cat > /etc/wireguard/wg0.conf <<-EOF
 [Interface]
 PrivateKey = $s1
-Address = 10.0.0.1/24 
+Address = 10.0.0.1/24, 2001:20:2333::1/28
 ListenPort = $port
-DNS = 8.8.8.8
-MTU = 1280
+DNS = 1.1.1.1, 2001:4860:4860::8888
+MTU = 1480
 
 [Peer]
 PublicKey = $c2
-AllowedIPs = 10.0.0.2/24
+AllowedIPs = 10.0.0.2/24, 2001:20:2333::1/28
 EOF
 
     config_client
