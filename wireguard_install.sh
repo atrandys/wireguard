@@ -102,7 +102,8 @@ wireguard_install(){
     service iptables save
     service iptables restart
     echo 1 > /proc/sys/net/ipv4/ip_forward
-    echo "net.ipv4.ip_forward = 1" > /etc/sysctl.conf	
+    echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+    sysctl -p
 cat > /etc/wireguard/wg0.conf <<-EOF
 [Interface]
 PrivateKey = $s1
