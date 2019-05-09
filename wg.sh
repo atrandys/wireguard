@@ -33,11 +33,23 @@ install_wireguard()
 		echo "deb http://deb.debian.org/debian/ unstable main"  > /etc/apt/sources.list.d/unstable.list
 		printf 'Package: *\nPin: release a=unstable\nPin-Priority: 150\n' >  /etc/apt/preferences.d/limit-unstable
 		apt update
-		apt install -y  wireguard resolvconf dnsutils psmisc
+		apt install -y  wireguard resolvconf dnsutils psmisc gcc make g++ 
 		apt install -y gettext build-essential unzip gzip openssl libssl-dev \
 						autoconf automake libtool gcc g++ make zlib1g-dev \
 						libev-dev libc-ares-dev git
 	fi
+
+	if grep Ubuntu /etc/issue ; then
+		echo "Install Wireguard"
+		add-apt-repository ppa:wireguard/wireguard
+		apt update
+                apt install -y  wireguard resolvconf dnsutils psmisc gcc make g++
+                apt install -y gettext build-essential unzip gzip openssl libssl-dev \
+                                                autoconf automake libtool gcc g++ make zlib1g-dev \
+                                                libev-dev libc-ares-dev git
+
+	fi
+
 
 	if [ -f /etc/centos-release ] ; then
 		curl -Lo /etc/yum.repos.d/wireguard.repo https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-7/jdoss-wireguard-epel-7.repo
