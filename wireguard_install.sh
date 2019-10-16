@@ -116,18 +116,18 @@ wireguard_install(){
     #echo "net.ipv4.ip_forward = 1" > /etc/sysctl.conf
     #echo "net.ipv6.conf.all.forwarding = 1" > /etc/sysctl.conf
     #优化网络配置，开启转发，开启内置bbr
-    echo 'net.ipv4.tcp_fastopen=1' | tee -a /etc/sysctl.conf
-    echo 'net.ipv4.ip_forward = 1' | tee -a /etc/sysctl.conf
-    echo 'net.ipv6.conf.all.forwarding = 1' | tee -a /etc/sysctl.conf
-    echo 'vm.swappiness=10' | tee -a /etc/sysctl.conf
-    echo 'vm.dirty_ratio=15' | tee -a /etc/sysctl.conf
-    echo 'vm.dirty_background_ratio=10' | tee -a /etc/sysctl.conf
-    echo 'vm.dirty_expire_centisecs=1500' | tee -a /etc/sysctl.conf
-    echo 'vm.dirty_writeback_centisecs=300' | tee -a /etc/sysctl.conf
-    echo 'vm.vfs_cache_pressure=500' | tee -a /etc/sysctl.conf
-    echo 'net.core.default_qdisc=fq' | tee -a /etc/sysctl.conf
-    echo 'net.ipv4.tcp_congestion_control=bbr' | tee -a /etc/sysctl.conf
-    sysctl -p
+    #echo 'net.ipv4.tcp_fastopen=1' | tee -a /etc/sysctl.conf
+    #echo 'net.ipv4.ip_forward = 1' | tee -a /etc/sysctl.conf
+    #echo 'net.ipv6.conf.all.forwarding = 1' | tee -a /etc/sysctl.conf
+    #echo 'vm.swappiness=10' | tee -a /etc/sysctl.conf
+    #echo 'vm.dirty_ratio=15' | tee -a /etc/sysctl.conf
+    #echo 'vm.dirty_background_ratio=10' | tee -a /etc/sysctl.conf
+    #echo 'vm.dirty_expire_centisecs=1500' | tee -a /etc/sysctl.conf
+    #echo 'vm.dirty_writeback_centisecs=300' | tee -a /etc/sysctl.conf
+    #echo 'vm.vfs_cache_pressure=500' | tee -a /etc/sysctl.conf
+    #echo 'net.core.default_qdisc=fq' | tee -a /etc/sysctl.conf
+    #echo 'net.ipv4.tcp_congestion_control=bbr' | tee -a /etc/sysctl.conf
+    #sysctl -p
     firewall-cmd --permanent --add-rich-rule='rule family=ipv4 source address=10.0.0.0/24 masquerade'
     firewall-cmd --permanent --direct --add-rule ipv4 filter FORWARD 0 -i wg0 -o $eth -j ACCEPT
     firewall-cmd --permanent --add-rich-rule='rule family=ipv6 source address=2001:20:2333::1/28 masquerade'
