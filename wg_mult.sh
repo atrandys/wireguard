@@ -51,27 +51,81 @@ function install_wg(){
     if [ "$RELEASE" == "centos" ] && [ "$VERSION" == "7" ]; then
         yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
         curl -o /etc/yum.repos.d/jdoss-wireguard-epel-7.repo https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-7/jdoss-wireguard-epel-7.repo
-        yum install -y wireguard-dkms wireguard-tools
+        yum install -y wireguard-dkms wireguard-tools qrencode iptables-services
+	systemctl stop firewalld
+        systemctl disable firewalld
+        systemctl enable iptables 
+        systemctl start iptables 
+        iptables -P INPUT ACCEPT
+        iptables -P OUTPUT ACCEPT
+        iptables -P FORWARD ACCEPT
+        iptables -F
+        service iptables save
+        service iptables restart
+        echo 1 > /proc/sys/net/ipv4/ip_forward
+        echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+        sysctl -p
     elif [ "$RELEASE" == "centos" ] && [ "$VERSION" == "8" ]; then
         yum install -y epel-release
         yum config-manager --set-enabled PowerTools
         yum copr enable jdoss/wireguard
-        yum install -y wireguard-dkms wireguard-tools
+        yum install -y wireguard-dkms wireguard-tools qrencode iptables-services
+	systemctl stop firewalld
+        systemctl disable firewalld
     elif [ "$RELEASE" == "ubuntu" ]; then
+        systemctl stop ufw
+        systemctl disable ufw
+        apt-get update
         add-apt-repository ppa:wireguard/wireguard
         apt-get update
-        apt-get install -y wireguard
+        apt-get install -y wireguard qrencode
     elif [ "$RELEASE" == "debian" ]; then
         echo "deb http://deb.debian.org/debian/ unstable main" > /etc/apt/sources.list.d/unstable.list
         printf 'Package: *\nPin: release a=unstable\nPin-Priority: 90\n' > /etc/apt/preferences.d/limit-unstable
         apt update
-        apt install -y wireguard
+        apt install -y wireguard qrencode
     else
+    	red "================="
         red "您当前系统暂未支持"
+	red "================="
     fi
 }
 
 function config_wg(){
+ls /sys/class/net| awk 'NR==1&&/^e/{print $1}'
+mkdir /etc/wireguard
+cd /etc/wireguard
+    wg genkey | tee sprivatekey | wg pubkey > spublickey
+    wg genkey | tee cprivatekey | wg pubkey > cpublickey
+    s1=$(cat sprivatekey)
+    s2=$(cat spublickey)
+    c1=$(cat cprivatekey)
+    c2=$(cat cpublickey)
+    serverip=$(curl ipv4.icanhazip.com)
+    port=$(rand 10000 60000)
+    eth=$(ls /sys/class/net | awk '/^e/{print}')
+    chmod 777 -R /etc/wireguard
 
+
+cat > /etc/wireguard/wg0.conf <<-EOF
+[Interface]
+PrivateKey = $s1
+Address = 10.0.0.1/24 
+PostUp   = echo 1 > /proc/sys/net/ipv4/ip_forward; iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o $eth -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o $eth -j MASQUERADE
+ListenPort = $port
+DNS = 8.8.8.8
+MTU = 1420
+[Peer]
+PublicKey = $c2
+AllowedIPs = 10.0.0.2/32
+EOF
+
+    config_client
+    wg-quick up wg0
+    systemctl enable wg-quick@wg0
+    content=$(cat /etc/wireguard/client.conf)
+    echo "电脑端请下载client.conf，手机端可直接使用软件扫码"
+    echo "${content}" | qrencode -o - -t UTF8
 
 }
