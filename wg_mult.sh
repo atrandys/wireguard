@@ -99,7 +99,9 @@ function install_wg(){
     elif [ "$RELEASE" == "ubuntu" ]; then
         systemctl stop ufw
         systemctl disable ufw
-        apt-get update
+        apt-get update -y
+	        sudo apt-get install -y software-properties-common
+        sudo apt-get install -y openresolv
         add-apt-repository -y ppa:wireguard/wireguard
         apt-get update
         apt-get install -y wireguard qrencode
