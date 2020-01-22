@@ -69,12 +69,6 @@ function install_wg(){
         systemctl disable firewalld
         systemctl enable iptables 
         systemctl start iptables 
-        iptables -P INPUT ACCEPT
-        iptables -P OUTPUT ACCEPT
-        iptables -P FORWARD ACCEPT
-        iptables -F
-        service iptables save
-        service iptables restart
         echo 1 > /proc/sys/net/ipv4/ip_forward
         echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
         sysctl -p
@@ -87,12 +81,6 @@ function install_wg(){
         systemctl disable firewalld
 	systemctl enable iptables 
         systemctl start iptables 
-        iptables -P INPUT ACCEPT
-        iptables -P OUTPUT ACCEPT
-        iptables -P FORWARD ACCEPT
-        iptables -F
-        service iptables save
-        service iptables restart
         echo 1 > /proc/sys/net/ipv4/ip_forward
         echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
         sysctl -p
@@ -103,7 +91,8 @@ function install_wg(){
         add-apt-repository ppa:wireguard/wireguard
         apt-get update
         apt-get install -y wireguard qrencode
-	        
+	systemctl enable iptables 
+        systemctl start iptables   
 	echo 1 > /proc/sys/net/ipv4/ip_forward
         echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
         sysctl -p
@@ -112,7 +101,8 @@ function install_wg(){
         printf 'Package: *\nPin: release a=unstable\nPin-Priority: 90\n' > /etc/apt/preferences.d/limit-unstable
         apt update
         apt install -y wireguard qrencode
-	
+	systemctl enable iptables 
+        systemctl start iptables
 	echo 1 > /proc/sys/net/ipv4/ip_forward
         echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
         sysctl -p
