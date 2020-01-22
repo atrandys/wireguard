@@ -10,6 +10,13 @@ function red(){
     echo -e "\033[31m\033[01m$1\033[0m"
 }
 
+function rand(){
+    min=$1
+    max=$(($2-$min+1))
+    num=$(cat /dev/urandom | head -n 10 | cksum | awk -F ' ' '{print $1}')
+    echo $(($num%$max+$min))  
+}
+
 function check_selinux(){
 
     CHECK=$(grep SELINUX= /etc/selinux/config | grep -v "#")
@@ -92,9 +99,9 @@ function install_wg(){
 }
 
 function config_wg(){
-ls /sys/class/net| awk 'NR==1&&/^e/{print $1}'
-mkdir /etc/wireguard
-cd /etc/wireguard
+
+    mkdir /etc/wireguard
+    cd /etc/wireguard
     wg genkey | tee sprivatekey | wg pubkey > spublickey
     wg genkey | tee cprivatekey | wg pubkey > cpublickey
     s1=$(cat sprivatekey)
@@ -103,7 +110,7 @@ cd /etc/wireguard
     c2=$(cat cpublickey)
     serverip=$(curl ipv4.icanhazip.com)
     port=$(rand 10000 60000)
-    eth=$(ls /sys/class/net | awk '/^e/{print}')
+    eth=$(ls /sys/class/net| awk 'NR==1&&/^e/{print $1}')
     chmod 777 -R /etc/wireguard
 
 
