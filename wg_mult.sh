@@ -69,6 +69,12 @@ function install_wg(){
         systemctl disable firewalld
         systemctl enable iptables 
         systemctl start iptables 
+	iptables -P INPUT ACCEPT
+   	iptables -P OUTPUT ACCEPT
+        iptables -P FORWARD ACCEPT
+ 	iptables -F
+        service iptables save
+  	service iptables restart
         echo 1 > /proc/sys/net/ipv4/ip_forward
         echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
         sysctl -p
@@ -80,7 +86,13 @@ function install_wg(){
 	systemctl stop firewalld
         systemctl disable firewalld
 	systemctl enable iptables 
-        systemctl start iptables 
+        systemctl start iptables
+	iptables -P INPUT ACCEPT
+   	iptables -P OUTPUT ACCEPT
+        iptables -P FORWARD ACCEPT
+ 	iptables -F
+        service iptables save
+  	service iptables restart
         echo 1 > /proc/sys/net/ipv4/ip_forward
         echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
         sysctl -p
