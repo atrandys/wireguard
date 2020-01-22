@@ -181,7 +181,7 @@ function add_user(){
     green "=================================="
     read -p "请输入用户名：" newname
     cd /etc/wireguard/
-    if [ ! -f "/etc/wireguard/$newname" ]; then
+    if [ ! -f "/etc/wireguard/$newname.conf" ]; then
         cp client.conf $newname.conf
     	wg genkey | tee temprikey | wg pubkey > tempubkey
     	ipnum=$(grep Allowed /etc/wireguard/wg0.conf | tail -1 | awk -F '[ ./]' '{print $6}')
