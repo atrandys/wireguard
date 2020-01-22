@@ -81,7 +81,7 @@ function install_wg(){
     elif [ "$RELEASE" == "centos" ] && [ "$VERSION" == "8" ]; then
         yum install -y epel-release
         yum config-manager --set-enabled PowerTools
-        yum copr enable jdoss/wireguard
+        yum copr enable -y jdoss/wireguard
         yum install -y wireguard-dkms wireguard-tools qrencode iptables-services
 	systemctl stop firewalld
         systemctl disable firewalld
