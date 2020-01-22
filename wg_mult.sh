@@ -62,7 +62,7 @@ function check_release(){
 function install_wg(){
     check_release
     if [ "$RELEASE" == "centos" ] && [ "$VERSION" == "7" ]; then
-        yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+        yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
         curl -o /etc/yum.repos.d/jdoss-wireguard-epel-7.repo https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-7/jdoss-wireguard-epel-7.repo
         yum install -y wireguard-dkms wireguard-tools qrencode iptables-services
 	systemctl stop firewalld
