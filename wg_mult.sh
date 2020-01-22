@@ -188,21 +188,22 @@ function add_user(){
     	newnum=$((10#${ipnum}+1))
     	sed -i 's%^PrivateKey.*$%'"PrivateKey = $(cat temprikey)"'%' $newname.conf
     	sed -i 's%^Address.*$%'"Address = 10.77.0.$newnum\/24"'%' $newname.conf
+	cat >> /etc/wireguard/wg0.conf <<-EOF
+[Peer]
+PublicKey = $(cat tempubkey)
+AllowedIPs = 10.77.0.$newnum/32
+EOF
+    	wg set wg0 peer $(cat tempubkey) allowed-ips 10.77.0.$newnum/32
+    	green "============================================="
+    	green "添加完成，文件：/etc/wireguard/$newname.conf"
+    	green "============================================="
+    	rm -f temprikey tempubkey
     else
     	red "======================"
 	red "用户名已存在，请更换名称"
 	red "======================"
     fi
-cat >> /etc/wireguard/wg0.conf <<-EOF
-[Peer]
-PublicKey = $(cat tempubkey)
-AllowedIPs = 10.77.0.$newnum/32
-EOF
-    wg set wg0 peer $(cat tempubkey) allowed-ips 10.77.0.$newnum/32
-    green "============================================="
-    green "添加完成，文件：/etc/wireguard/$newname.conf"
-    green "============================================="
-    rm -f temprikey tempubkey
+
 }
 
 function remove_wg(){
