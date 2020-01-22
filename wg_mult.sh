@@ -100,7 +100,7 @@ function install_wg(){
         systemctl stop ufw
         systemctl disable ufw
         apt-get update
-        add-apt-repository ppa:wireguard/wireguard
+        add-apt-repository -y ppa:wireguard/wireguard
         apt-get update
         apt-get install -y wireguard qrencode
 	systemctl enable iptables 
