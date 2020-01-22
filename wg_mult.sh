@@ -100,7 +100,7 @@ function install_wg(){
         systemctl stop ufw
         systemctl disable ufw
         apt-get -y update 
-	if [ "VERSION_ID" == "18" ]; then
+	if [ "$VERSION_ID" == "18" ]; then
 	    apt-get install -y software-properties-common
             apt-get install -y openresolv
         fi
