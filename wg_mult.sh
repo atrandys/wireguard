@@ -99,10 +99,12 @@ function install_wg(){
     elif [ "$RELEASE" == "ubuntu" ]; then
         systemctl stop ufw
         systemctl disable ufw
-        apt-get update -y
-	        sudo apt-get install -y software-properties-common
-        sudo apt-get install -y openresolv
-        add-apt-repository -y ppa:wireguard/wireguard
+        apt-get -y update 
+	if [ "VERSION_ID" == "18" ]
+	    apt-get install -y software-properties-common
+            apt-get install -y openresolv
+        fi
+	add-apt-repository -y ppa:wireguard/wireguard
         apt-get update
         apt-get install -y wireguard qrencode
 	systemctl enable iptables 
