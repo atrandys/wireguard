@@ -9,14 +9,13 @@ rand(){
 
 wireguard_install(){
     version=$(cat /etc/os-release | awk -F '[".]' '$1=="VERSION="{print $2}')
-    if [ $version == 18 ]
-    then
+    if [ $version == 18 ]; then
         sudo apt-get update -y
         sudo apt-get install -y software-properties-common
         sudo apt-get install -y openresolv
-    else
-        sudo apt-get update -y
-        sudo apt-get install -y software-properties-common
+    #else
+     #   sudo apt-get update -y
+      #  sudo apt-get install -y software-properties-common
     fi
     sudo add-apt-repository -y ppa:wireguard/wireguard
     sudo apt-get update -y
