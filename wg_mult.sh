@@ -50,11 +50,17 @@ function check_selinux(){
     fi
 }
 
-function install_wg(){
+function check_release(){
 
     source /etc/os-release
     RELEASE=$ID
     VERSION=$VERSION_ID
+
+}
+
+
+function install_wg(){
+    check_release
     if [ "$RELEASE" == "centos" ] && [ "$VERSION" == "7" ]; then
         yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
         curl -o /etc/yum.repos.d/jdoss-wireguard-epel-7.repo https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-7/jdoss-wireguard-epel-7.repo
@@ -79,6 +85,17 @@ function install_wg(){
         yum install -y wireguard-dkms wireguard-tools qrencode iptables-services
 	systemctl stop firewalld
         systemctl disable firewalld
+	systemctl enable iptables 
+        systemctl start iptables 
+        iptables -P INPUT ACCEPT
+        iptables -P OUTPUT ACCEPT
+        iptables -P FORWARD ACCEPT
+        iptables -F
+        service iptables save
+        service iptables restart
+        echo 1 > /proc/sys/net/ipv4/ip_forward
+        echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+        sysctl -p
     elif [ "$RELEASE" == "ubuntu" ]; then
         systemctl stop ufw
         systemctl disable ufw
@@ -86,11 +103,19 @@ function install_wg(){
         add-apt-repository ppa:wireguard/wireguard
         apt-get update
         apt-get install -y wireguard qrencode
+	        
+	echo 1 > /proc/sys/net/ipv4/ip_forward
+        echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+        sysctl -p
     elif [ "$RELEASE" == "debian" ]; then
         echo "deb http://deb.debian.org/debian/ unstable main" > /etc/apt/sources.list.d/unstable.list
         printf 'Package: *\nPin: release a=unstable\nPin-Priority: 90\n' > /etc/apt/preferences.d/limit-unstable
         apt update
         apt install -y wireguard qrencode
+	
+	echo 1 > /proc/sys/net/ipv4/ip_forward
+        echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+        sysctl -p
     else
     	red "================="
         red "您当前系统暂未支持"
@@ -178,14 +203,38 @@ EOF
     rm -f temprikey tempubkey
 }
 
+function remove_wg(){
+    check_release
+    if [ -d "/etc/wireguard" ]; then
+    	wg-quick down wg0
+    	if [ "$RELEASE" == "centos" ]; then
+            yum remove -y wireguard-dkms wireguard-tools
+            rm -rf /etc/wireguard/
+            green "卸载完成"
+        elif [ "$RELEASE" == "ubuntu" ]; then
+    	    apt-get remove -y wireguard
+	    rm -rf /etc/wireguard/
+            green "卸载完成"
+        elif [ "$RELEASE" == "debian" ]; then
+    	    apt remove -y wireguard
+	    rm -rf /etc/wireguard/
+            green "卸载完成"
+        else
+    	    red "系统不符合要求"
+        fi
+    else
+    	red "未检测到wireguard"
+    fi
+}
+
 function start_menu(){
     clear
-    green "===================================="
-    green " Info   : For Centos7+/Ubuntu/Debian"
+    green "=========================================="
+    green " Info   : For Centos7+/Ubuntu16+/Debian9+"
     green " Author : atrandys"
     green " Website: www.atrandys.com"
     green " YouTube: Randy's 堡垒"
-    green "===================================="
+    green "=========================================="
     green "1. Install wireguard"
     red "2. Remove wireguard"
     green "3. Show client QRcode"
