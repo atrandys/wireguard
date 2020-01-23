@@ -79,33 +79,54 @@ function install_wg(){
         echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
         sysctl -p
     elif [ "$RELEASE" == "centos" ] && [ "$VERSION" == "8" ]; then
-        yum install -y epel-release
-        yum config-manager --set-enabled PowerTools
-        yum copr enable -y jdoss/wireguard
-        yum install -y wireguard-dkms wireguard-tools qrencode iptables-services
-	systemctl stop firewalld
-        systemctl disable firewalld
-	systemctl enable iptables 
-        systemctl start iptables
-	iptables -P INPUT ACCEPT
-   	iptables -P OUTPUT ACCEPT
-        iptables -P FORWARD ACCEPT
- 	iptables -F
-        service iptables save
-  	service iptables restart
-        echo 1 > /proc/sys/net/ipv4/ip_forward
-        echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
-        sysctl -p
-    elif [ "$RELEASE" == "ubuntu" ]; then
+        #yum install -y epel-release
+        #yum config-manager --set-enabled PowerTools
+        #yum copr enable -y jdoss/wireguard
+        #yum install -y wireguard-dkms wireguard-tools qrencode iptables-services
+	#systemctl stop firewalld
+        #systemctl disable firewalld
+	#systemctl enable iptables 
+        #systemctl start iptables
+	#iptables -P INPUT ACCEPT
+   	#iptables -P OUTPUT ACCEPT
+        #iptables -P FORWARD ACCEPT
+ 	#iptables -F
+        #service iptables save
+  	#service iptables restart
+        #echo 1 > /proc/sys/net/ipv4/ip_forward
+        #echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+        #sysctl -p
+	red "==================="
+        red "暂未支持Centos8系统"
+        red "==================="
+    elif [ "$RELEASE" == "ubuntu" ]  && [ "$VERSION" == "19.04" ]; then
+    	red "==================="
+        red "暂未支持Centos8系统"
+        red "==================="
+    elif [ "$RELEASE" == "ubuntu" ]  && [ "$VERSION" == "19.10" ]; then 
+    	red "==================="
+        red "暂未支持Centos8系统"
+        red "==================="
+    elif [ "$RELEASE" == "ubuntu" ]  && [ "$VERSION" == "16.04" ]; then
         systemctl stop ufw
         systemctl disable ufw
         apt-get -y update 
-	if [ "$VERSION_ID" == "18.04" ]; then
-	    apt-get install -y software-properties-common
-            apt-get install -y openresolv
-        fi
 	add-apt-repository -y ppa:wireguard/wireguard
         apt-get update
+        apt-get install -y wireguard qrencode
+	systemctl enable iptables 
+        systemctl start iptables   
+	echo 1 > /proc/sys/net/ipv4/ip_forward
+        echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+        sysctl -p
+    elif [ "$RELEASE" == "ubuntu" ] && [ "$VERSION" == "18.04" ]; then
+        systemctl stop ufw
+        systemctl disable ufw
+        apt-get -y update 
+	apt-get install -y software-properties-common
+        apt-get install -y openresolv
+	add-apt-repository -y ppa:wireguard/wireguard
+        apt-get -y update
         apt-get install -y wireguard qrencode
 	systemctl enable iptables 
         systemctl start iptables   
