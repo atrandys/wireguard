@@ -101,11 +101,11 @@ function install_wg(){
         red "==================="
     elif [ "$RELEASE" == "ubuntu" ]  && [ "$VERSION" == "19.04" ]; then
     	red "==================="
-        red "暂未支持Centos8系统"
+        red "暂未支持ubuntu19.04系统"
         red "==================="
     elif [ "$RELEASE" == "ubuntu" ]  && [ "$VERSION" == "19.10" ]; then 
     	red "==================="
-        red "暂未支持Centos8系统"
+        red "暂未支持ubuntu19.10系统"
         red "==================="
     elif [ "$RELEASE" == "ubuntu" ]  && [ "$VERSION" == "16.04" ]; then
         systemctl stop ufw
@@ -113,7 +113,7 @@ function install_wg(){
         apt-get -y update 
 	add-apt-repository -y ppa:wireguard/wireguard
         apt-get update
-        apt-get install -y wireguard qrencode
+        apt-get install -y wireguard qrencode iptables
 	systemctl enable iptables 
         systemctl start iptables   
 	echo 1 > /proc/sys/net/ipv4/ip_forward
@@ -127,7 +127,7 @@ function install_wg(){
         apt-get install -y openresolv
 	add-apt-repository -y ppa:wireguard/wireguard
         apt-get -y update
-        apt-get install -y wireguard qrencode
+        apt-get install -y wireguard qrencode iptables
 	systemctl enable iptables 
         systemctl start iptables   
 	echo 1 > /proc/sys/net/ipv4/ip_forward
@@ -137,7 +137,7 @@ function install_wg(){
         echo "deb http://deb.debian.org/debian/ unstable main" > /etc/apt/sources.list.d/unstable.list
         printf 'Package: *\nPin: release a=unstable\nPin-Priority: 90\n' > /etc/apt/preferences.d/limit-unstable
         apt update
-        apt install -y wireguard qrencode
+        apt install -y wireguard qrencode iptables
 	systemctl enable iptables 
         systemctl start iptables
 	echo 1 > /proc/sys/net/ipv4/ip_forward
