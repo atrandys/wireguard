@@ -42,7 +42,21 @@ check_selinux(){
     fi
 }
 
-docker_install(){
+check_release(){
     source /etc/os-release
+    RELEASE=$ID
+    VERSION=$VERSION_ID
+}
+
+docker_install(){
+    check_release
+    if [ "$RELEASE" == "centos" ]; then
     
+    elif [ "$RELEASE" == "ubuntu" ]; then
+    
+    elif [ "$RELEASE" == "debian" ]; then
+    
+    else
+    
+    fi
 }
