@@ -51,11 +51,19 @@ check_release(){
 docker_install(){
     check_release
     if [ "$RELEASE" == "centos" ]; then
+        green "=========================="
+	green "Start installing docker..."
+	green "=========================="
+	sleep 2
         yum remove -y docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-engine
 	yum install -y yum-utils device-mapper-persistent-data lvm2
 	yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 	yum install -y docker-ce docker-ce-cli containerd.io
     elif [ "$RELEASE" == "ubuntu" ]; then
+        green "=========================="
+	green "Start installing docker..."
+	green "=========================="
+	sleep 2
         apt-get remove -y docker docker-engine docker.io containerd runc
 	apt-get update
 	apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
@@ -64,6 +72,10 @@ docker_install(){
 	apt-get update
 	apt-get install -y docker-ce docker-ce-cli containerd.io
     elif [ "$RELEASE" == "debian" ]; then
+        green "=========================="
+	green "Start installing docker..."
+	green "=========================="
+	sleep 2
         apt-get remove -y docker docker-engine docker.io containerd runc
 	apt-get update
 	apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common
@@ -77,4 +89,11 @@ docker_install(){
 	red "======================================="
 	exit 1
     fi
+    systemctl enable docker
+    systemctl start docker
+}
+
+wg_install(){
+    docker pull atrandys/wireguard
+    
 }
