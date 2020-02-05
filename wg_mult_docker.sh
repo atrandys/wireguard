@@ -95,5 +95,9 @@ docker_install(){
 
 wg_install(){
     docker pull atrandys/wireguard
+    mkdir /etc/wireguard
+    docker run -itd -P --name wireguard -v /etc/wireguard:/etc/wireguard atrandys/wireguard /bin/sh
     
 }
+docker_install
+wg_install
