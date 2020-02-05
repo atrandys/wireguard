@@ -63,6 +63,7 @@ function install_wg(){
     check_release
     if [ "$RELEASE" == "centos" ] && [ "$VERSION" == "7" ]; then
         yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+	yum install -y "kernel-devel-uname-r == $(uname -r)"
         curl -o /etc/yum.repos.d/jdoss-wireguard-epel-7.repo https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-7/jdoss-wireguard-epel-7.repo
         yum install -y wireguard-dkms wireguard-tools qrencode iptables-services
 	systemctl stop firewalld
@@ -79,23 +80,24 @@ function install_wg(){
         echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
         sysctl -p
     elif [ "$RELEASE" == "centos" ] && [ "$VERSION" == "8" ]; then
-        #yum install -y epel-release
-        #yum config-manager --set-enabled PowerTools
-        #yum copr enable -y jdoss/wireguard
-        #yum install -y wireguard-dkms wireguard-tools qrencode iptables-services
-	#systemctl stop firewalld
-        #systemctl disable firewalld
-	#systemctl enable iptables 
-        #systemctl start iptables
-	#iptables -P INPUT ACCEPT
-   	#iptables -P OUTPUT ACCEPT
-        #iptables -P FORWARD ACCEPT
- 	#iptables -F
-        #service iptables save
-  	#service iptables restart
-        #echo 1 > /proc/sys/net/ipv4/ip_forward
-        #echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
-        #sysctl -p
+        yum install -y epel-release
+	yum install -y "kernel-devel-uname-r == $(uname -r)"
+        yum config-manager --set-enabled PowerTools
+        yum copr enable -y jdoss/wireguard
+        yum install -y wireguard-dkms wireguard-tools qrencode iptables-services
+	systemctl stop firewalld
+        systemctl disable firewalld
+	systemctl enable iptables 
+        systemctl start iptables
+	iptables -P INPUT ACCEPT
+   	iptables -P OUTPUT ACCEPT
+        iptables -P FORWARD ACCEPT
+ 	iptables -F
+        service iptables save
+  	service iptables restart
+        echo 1 > /proc/sys/net/ipv4/ip_forward
+        echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+        sysctl -p
 	red "==================="
         red "暂未支持Centos8系统"
         red "==================="
