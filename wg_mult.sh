@@ -98,9 +98,6 @@ function install_wg(){
         echo 1 > /proc/sys/net/ipv4/ip_forward
         echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
         sysctl -p
-	red "==================="
-        red "暂未支持Centos8系统"
-        red "==================="
     elif [ "$RELEASE" == "ubuntu" ]  && [ "$VERSION" == "19.04" ]; then
     	red "==================="
         red "暂未支持ubuntu19.04系统"
