@@ -105,7 +105,7 @@ wg_install(){
     mkdir /etc/wireguard
     cd /etc/wireguard
     docker run -itd -P --restart=always --name wireguard -v /etc/wireguard:/etc/wireguard atrandys/wireguard /bin/sh
-    docker exec -it wireguard /bin/sh "cd /etc/wireguard;wg genkey | tee sprivatekey | wg pubkey > spublickey;wg genkey | tee cprivatekey | wg pubkey > cpublickey"
+    docker exec -it wireguard /bin/sh -c "cd /etc/wireguard;wg genkey | tee sprivatekey | wg pubkey > spublickey;wg genkey | tee cprivatekey | wg pubkey > cpublickey"
     s1=$(cat sprivatekey)
     s2=$(cat spublickey)
     c1=$(cat cprivatekey)
