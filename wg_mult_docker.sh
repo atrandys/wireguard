@@ -188,6 +188,7 @@ wg_remove(){
 	green "wireguard配置文件已删除"
     else
         red "你似乎没有安装wireguard"
+    fi
 }
 
 start_menu(){
