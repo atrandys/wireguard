@@ -258,9 +258,7 @@ function start_menu(){
     clear
     green "=========================================="
     green " Info   : For Centos7+/Ubuntu16+/Debian9+"
-    green " Author : atrandys"
-    green " Website: www.atrandys.com"
-    green " YouTube: Randy's 堡垒"
+    green " Author : A"
     green "=========================================="
     green "1. Install wireguard"
     red "2. Remove wireguard"
