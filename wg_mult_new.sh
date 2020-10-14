@@ -64,9 +64,10 @@ function install_tools(){
 function install_wg(){
     check_release
     if [ "$RELEASE" == "centos" ] && [ "$VERSION" == "7" ]; then
-        yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-        curl -o /etc/yum.repos.d/jdoss-wireguard-epel-7.repo https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-7/jdoss-wireguard-epel-7.repo
-        yum install -y wireguard-dkms wireguard-tools
+        yum install -y yum-utils epel-release
+        yum-config-manager --setopt=centosplus.includepkgs=kernel-plus --enablerepo=centosplus --save
+        sed -e 's/^DEFAULTKERNEL=kernel$/DEFAULTKERNEL=kernel-plus/' -i /etc/sysconfig/kernel
+        yum install -y kernel-plus wireguard-tools
         systemctl stop firewalld
         systemctl disable firewalld
         install_tools "yum"
@@ -158,6 +159,14 @@ EOF
     content=$(cat /etc/wireguard/client.conf)
     green "电脑端请下载/etc/wireguard/client.conf文件，手机端可直接使用软件扫码"
     green "${content}" | qrencode -o - -t UTF8
+    if [ "$RELEASE" == "centos" ] && [ "$VERSION" == "7" ]; then
+        read -p "系统为CentOS7，必须重启一次wireguard才能正常使用，是否现在重启 ? [Y/n] :" yn
+	    [ -z "${yn}" ] && yn="y"
+	    if [[ $yn == [Yy] ]]; then
+	    	echo -e "VPS 重启中..."
+	    	reboot
+	    fi
+    fi
 
 }
 
