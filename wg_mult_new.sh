@@ -72,10 +72,10 @@ function install_wg(){
         systemctl disable firewalld
         install_tools "yum"
     elif [ "$RELEASE" == "centos" ] && [ "$VERSION" == "8" ]; then
-        yum install -y epel-release
-        yum config-manager --set-enabled PowerTools
-        yum -y copr enable jdoss/wireguard
-        yum install -y wireguard-dkms wireguard-tools
+        yum install -y yum-utils epel-release
+        yum-config-manager --setopt=centosplus.includepkgs="kernel-plus, kernel-plus-*" --setopt=centosplus.enabled=1 --save
+        sed -e 's/^DEFAULTKERNEL=kernel-core$/DEFAULTKERNEL=kernel-plus-core/' -i /etc/sysconfig/kernel
+        yum install -y kernel-plus wireguard-tools
         systemctl stop firewalld
         systemctl disable firewalld
         install_tools "yum"
