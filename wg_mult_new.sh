@@ -45,16 +45,13 @@ function check_release(){
 }
 
 function install_tools(){
-
-    $1 install -y qrencode iptables-services
+    if [ "$RELEASE" == "centos" ]; then
+        $1 install -y qrencode iptables-services
+    else
+        $1 install -y qrencode iptables
+    fi
     systemctl enable iptables 
     systemctl start iptables 
-    iptables -P INPUT ACCEPT
-    iptables -P OUTPUT ACCEPT
-    iptables -P FORWARD ACCEPT
-    iptables -F
-    service iptables save
-    service iptables restart
     echo 1 > /proc/sys/net/ipv4/ip_forward
     echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
     sysctl -p
@@ -103,10 +100,13 @@ function install_wg(){
         apt-get install -y wireguard
         install_tools "apt-get"
     elif [ "$RELEASE" == "debian" ]; then
-        echo "deb http://deb.debian.org/debian/ unstable main" > /etc/apt/sources.list.d/unstable.list
-        printf 'Package: *\nPin: release a=unstable\nPin-Priority: 90\n' > /etc/apt/preferences.d/limit-unstable
+        echo "deb http://deb.debian.org/debian buster-backports main" >> /etc/apt/sources.list
+        #printf 'Package: *\nPin: release a=unstable\nPin-Priority: 90\n' > /etc/apt/preferences.d/limit-unstable
         apt update
-        apt install -y wireguard
+	apt install linux-image-5.8.0-0.bpo.2-cloud-amd64
+	apt install -y wireguard openresolv
+	#apt update
+        #apt install -y wireguard
         install_tools "apt"
     else
         red "=================="
@@ -156,12 +156,12 @@ Endpoint = $serverip:$port
 AllowedIPs = 0.0.0.0/0, ::0/0
 PersistentKeepalive = 25
 EOF
-    wg-quick up wg0
+    #wg-quick up wg0
     systemctl enable wg-quick@wg0
     content=$(cat /etc/wireguard/client.conf)
     green "电脑端请下载/etc/wireguard/client.conf文件，手机端可直接使用软件扫码"
     green "${content}" | qrencode -o - -t UTF8
-    if [ "$RELEASE" == "centos" ]; then
+    if [ "$RELEASE" == "centos" ] || [ "$RELEASE" == "debian" ]; then
         red "注意：本次安装必须重启一次, wireguard才能正常使用"
         read -p "是否现在重启 ? [Y/n] :" yn
 	    [ -z "${yn}" ] && yn="y"
