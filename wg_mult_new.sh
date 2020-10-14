@@ -64,15 +64,17 @@ function install_tools(){
 function install_wg(){
     check_release
     if [ "$RELEASE" == "centos" ] && [ "$VERSION" == "7" ]; then
-        yum install -y epel-release elrepo-release
-        yum install -y yum-plugin-elrepo
-        yum install -y kmod-wireguard wireguard-tools qrencode iptables-services
+        yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+        curl -o /etc/yum.repos.d/jdoss-wireguard-epel-7.repo https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-7/jdoss-wireguard-epel-7.repo
+        yum install -y wireguard-dkms wireguard-tools
         systemctl stop firewalld
         systemctl disable firewalld
         install_tools "yum"
     elif [ "$RELEASE" == "centos" ] && [ "$VERSION" == "8" ]; then
-        yum install -y elrepo-release epel-release
-        yum install -y kmod-wireguard wireguard-tools
+        yum install -y epel-release
+        yum config-manager --set-enabled PowerTools
+        yum copr enable jdoss/wireguard
+        yum install -y wireguard-dkms wireguard-tools
         systemctl stop firewalld
         systemctl disable firewalld
         install_tools "yum"
