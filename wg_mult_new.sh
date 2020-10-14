@@ -95,7 +95,7 @@ function install_wg(){
         systemctl disable ufw
         apt-get -y update 
         #apt-get install -y software-properties-common
-        #apt-get install -y openresolv
+        apt-get install -y openresolv
         #add-apt-repository -y ppa:wireguard/wireguard
         apt-get install -y wireguard
         install_tools "apt-get"
