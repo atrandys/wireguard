@@ -103,7 +103,7 @@ function install_wg(){
         apt-get install -y wireguard
         install_tools "apt-get"
     elif [ "$RELEASE" == "debian" ]; then
-        apt update
+        apt-get -y update
         apt-get install -y wireguard
         install_tools "apt-get"
     else
