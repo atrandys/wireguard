@@ -47,11 +47,11 @@ function check_release(){
 function install_tools(){
     if [ "$RELEASE" == "centos" ]; then
         $1 install -y qrencode iptables-services
+        systemctl enable iptables 
+        systemctl start iptables 
     else
         $1 install -y qrencode iptables
     fi
-    systemctl enable iptables 
-    systemctl start iptables 
     echo 1 > /proc/sys/net/ipv4/ip_forward
     echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
     sysctl -p
