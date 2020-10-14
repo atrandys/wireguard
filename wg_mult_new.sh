@@ -103,7 +103,7 @@ function install_wg(){
         echo "deb http://deb.debian.org/debian buster-backports main" >> /etc/apt/sources.list
         #printf 'Package: *\nPin: release a=unstable\nPin-Priority: 90\n' > /etc/apt/preferences.d/limit-unstable
         apt update
-	apt install linux-image-5.8.0-0.bpo.2-cloud-amd64
+	apt install -y linux-image-5.8.0-0.bpo.2-cloud-amd64
 	apt install -y wireguard openresolv
 	#apt update
         #apt install -y wireguard
