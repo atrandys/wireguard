@@ -159,8 +159,9 @@ EOF
     content=$(cat /etc/wireguard/client.conf)
     green "电脑端请下载/etc/wireguard/client.conf文件，手机端可直接使用软件扫码"
     green "${content}" | qrencode -o - -t UTF8
-    if [ "$RELEASE" == "centos" ] && [ "$VERSION" == "7" ]; then
-        read -p "系统为CentOS7，必须重启一次wireguard才能正常使用，是否现在重启 ? [Y/n] :" yn
+    if [ "$RELEASE" == "centos" ]; then
+        red "注意：本地安装，必须重启一次wireguard才能正常使用"
+        read -p "是否现在重启 ? [Y/n] :" yn
 	    [ -z "${yn}" ] && yn="y"
 	    if [[ $yn == [Yy] ]]; then
 	    	echo -e "VPS 重启中..."
