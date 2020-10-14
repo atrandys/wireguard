@@ -228,17 +228,18 @@ function remove_wg(){
 
 function start_menu(){
     clear
-    green "=========================================="
-    green " Info   : For Centos7+/Ubuntu16+/Debian9+"
-    green " Author : A"
-    green "=========================================="
-    green "1. Install wireguard"
-    red "2. Remove wireguard"
-    green "3. Show client QRcode"
-    green "4. Add user"
-    red "0. Exit"
+    green "=============================================="
+    green " 介绍: 一键安装wireguard, 增加wireguard多用户"
+    green " 系统: Centos7+/Ubuntu16.04+/Debian9+"
+    green " 作者: atrandys www.atrandys.com"
+    green "=============================================="
+    green "1. 安装wireguard"
+    red "2. 删除wireguard"
+    green "3. 显示默认用户二维码"
+    green "4. 增加用户"
+    red "0. 退出"
     echo
-    read -p "Please enter a number:" num
+    read -p "请选择:" num
     case "$num" in
         1)
         check_selinux
