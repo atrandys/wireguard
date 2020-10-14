@@ -103,9 +103,11 @@ function install_wg(){
         apt-get install -y wireguard
         install_tools "apt-get"
     elif [ "$RELEASE" == "debian" ]; then
-        apt-get -y update
-        apt-get install -y wireguard
-        install_tools "apt-get"
+        echo "deb http://deb.debian.org/debian/ unstable main" > /etc/apt/sources.list.d/unstable.list
+        printf 'Package: *\nPin: release a=unstable\nPin-Priority: 90\n' > /etc/apt/preferences.d/limit-unstable
+        apt update
+        apt install -y wireguard
+        install_tools "apt"
     else
         red "=================="
         red "$RELEASE $VERSION系统暂未支持"
