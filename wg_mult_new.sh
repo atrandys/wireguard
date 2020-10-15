@@ -81,6 +81,12 @@ function install_wg(){
         systemctl disable firewalld
         install_tools "yum"
     elif [ "$RELEASE" == "ubuntu" ]; then
+        if [ "$VERSION" == "12.04" ] || [ "$VERSION" == "16.04" ]; then
+	    red "=================="
+            red "$RELEASE $VERSION系统暂未支持"
+            red "=================="
+	    exit
+	fi
         systemctl stop ufw
         systemctl disable ufw
 	wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-headers-5.8.15-050815-generic_5.8.15-050815.202010141131_amd64.deb
@@ -88,7 +94,7 @@ function install_wg(){
 	wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-image-unsigned-5.8.15-050815-generic_5.8.15-050815.202010141131_amd64.deb
 	wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-modules-5.8.15-050815-generic_5.8.15-050815.202010141131_amd64.deb
 	dpkg -i *.deb
-        apt-get -y update 
+	apt-get -y update
         #apt-get install -y software-properties-common
         apt-get install -y openresolv
         #add-apt-repository -y ppa:wireguard/wireguard
