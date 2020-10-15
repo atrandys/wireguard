@@ -53,6 +53,8 @@ function install_tools(){
         $1 install -y qrencode iptables-services
         systemctl enable iptables 
         systemctl start iptables 
+        iptables -F
+	service iptables save
     else
         $1 install -y qrencode iptables
     fi
