@@ -229,11 +229,12 @@ function remove_wg(){
 
 function start_menu(){
     clear
-    green "=============================================="
+    green "==============================================="
     green " 介绍: 一键安装wireguard, 增加wireguard多用户"
-    green " 系统: Centos7+/Ubuntu16.04+/Debian9+"
+    green " 系统: Centos7+/Ubuntu18.04+/Debian9+"
     green " 作者: atrandys www.atrandys.com"
-    green "=============================================="
+    green " 提示: 脚本安装过程中会升级内核，请勿生产环境使用"
+    green "==============================================="
     green "1. 安装wireguard"
     red "2. 删除wireguard"
     green "3. 显示默认用户二维码"
