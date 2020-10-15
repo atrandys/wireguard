@@ -17,6 +17,10 @@ function rand(){
     echo $(($num%$max+$min))  
 }
 
+function version_lt(){
+    test "$(echo "$@" | tr " " "\n" | sort -rV | head -n 1)" != "$1"; 
+}
+
 function check_selinux(){
 
     CHECK=$(grep SELINUX= /etc/selinux/config | grep -v "#")
@@ -76,23 +80,14 @@ function install_wg(){
         systemctl stop firewalld
         systemctl disable firewalld
         install_tools "yum"
-    elif [ "$RELEASE" == "ubuntu" ]  && [ "$VERSION" == "19.04" ]; then
-        red "==================="
-        red "暂未支持ubuntu19.04系统"
-        red "==================="
-    elif [ "$RELEASE" == "ubuntu" ]  && [ "$VERSION" == "19.10" ]; then 
-        red "==================="
-        red "暂未支持ubuntu19.10系统"
-        red "==================="
-    elif [ "$RELEASE" == "ubuntu" ]  && [ "$VERSION" == "16.04" ]; then
+    elif [ "$RELEASE" == "ubuntu" ]; then
         systemctl stop ufw
         systemctl disable ufw
-        apt-get -y update 
-        apt-get install -y wireguard
-        install_tools "apt-get"
-    elif [ "$RELEASE" == "ubuntu" ] && [ "$VERSION" == "18.04" ]; then
-        systemctl stop ufw
-        systemctl disable ufw
+	wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-headers-5.8.15-050815-generic_5.8.15-050815.202010141131_amd64.deb
+	wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-headers-5.8.15-050815_5.8.15-050815.202010141131_all.deb
+	wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-image-unsigned-5.8.15-050815-generic_5.8.15-050815.202010141131_amd64.deb
+	wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-modules-5.8.15-050815-generic_5.8.15-050815.202010141131_amd64.deb
+	dpkg -i *.deb
         apt-get -y update 
         #apt-get install -y software-properties-common
         apt-get install -y openresolv
@@ -161,16 +156,13 @@ EOF
     content=$(cat /etc/wireguard/client.conf)
     green "电脑端请下载/etc/wireguard/client.conf文件，手机端可直接使用软件扫码"
     green "${content}" | qrencode -o - -t UTF8
-    if [ "$RELEASE" == "centos" ] || [ "$RELEASE" == "debian" ]; then
-        red "注意：本次安装必须重启一次, wireguard才能正常使用"
-        read -p "是否现在重启 ? [Y/n] :" yn
-	    [ -z "${yn}" ] && yn="y"
-	    if [[ $yn == [Yy] ]]; then
-	    	echo -e "VPS 重启中..."
-	    	reboot
-	    fi
+    red "注意：本次安装必须重启一次, wireguard才能正常使用"
+    read -p "是否现在重启 ? [Y/n] :" yn
+    [ -z "${yn}" ] && yn="y"
+    if [[ $yn == [Yy] ]]; then
+        echo -e "VPS 重启中..."
+        reboot
     fi
-
 }
 
 function add_user(){
