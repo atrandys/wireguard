@@ -192,8 +192,8 @@ function udp_install(){
     #启动udpspeeder和udp2raw
     udpport=$(rand 10000 60000)
     password=$(randpwd)
-    nohup ./speederv2 -s -l127.0.0.1:23333 -r127.0.0.1:$port -f2:4 --mode 0 --timeout 0 >speeder.log 2>&1 &
-    nohup ./run.sh ./udp2raw -s -l0.0.0.0:$udpport -r 127.0.0.1:23333  --raw-mode faketcp  -a -k $password >udp2raw.log 2>&1 &
+    #nohup ./speederv2 -s -l127.0.0.1:23333 -r127.0.0.1:$port -f2:4 --mode 0 --timeout 0 >speeder.log 2>&1 &
+    #nohup ./udp2raw -s -l0.0.0.0:$udpport -r 127.0.0.1:23333  --raw-mode faketcp  -a -k $password >udp2raw.log 2>&1 &
     echo -e "\033[37;41m输入你客户端电脑的默认网关，打开cmd，使用ipconfig命令查看\033[0m"
     read -p "比如192.168.1.1 ：" ugateway
 
@@ -228,7 +228,7 @@ EOF
 cat > /etc/wireguard/udp.sh <<-EOF
 #!/bin/bash
 nohup usr/src/udp/speederv2 -s -l127.0.0.1:23333 -r127.0.0.1:$port -f2:4 --mode 0 --timeout 0 >speeder.log 2>&1 &
-nohup usr/src/udp/run.sh ./udp2raw -s -l0.0.0.0:$udpport -r 127.0.0.1:23333  --raw-mode faketcp  -a -k $password >udp2raw.log 2>&1 &
+nohup usr/src/udp/udp2raw -s -l0.0.0.0:$udpport -r 127.0.0.1:23333  --raw-mode faketcp  -a -k $password >udp2raw.log 2>&1 &
 EOF
 
     chmod +x /etc/wireguard/udp.sh
@@ -236,14 +236,14 @@ EOF
 #增加自启动脚本
 cat > /etc/systemd/system/autoudp.service<<-EOF
 [Unit]  
-Description=trojan  
+Description=autoudp 
 After=network.target  
    
 [Service]  
 Type=simple  
 
-ExecStart=bash /etc/wireguard/udp.sh
-ExecReload=kill -9 $(pidof udp2raw) && kill -9 $(pidof udpspeeder)
+ExecStart=/etc/wireguard/udp.sh
+ExecReload=kill -9 \$(pidof udp2raw) && kill -9 \$(pidof udpspeeder)
 Restart=on-failure
 RestartSec=1s
    
@@ -316,15 +316,14 @@ function remove_wg(){
 function start_menu(){
     clear
     green "==============================================="
-    green " 介绍: 一键安装wireguard, 增加wireguard多用户"
+    green " 介绍: 一键安装wireguard + udpspeeder + udp2raw"
     green " 系统: Centos7+/Ubuntu18.04+/Debian9+"
     green " 作者: atrandys www.atrandys.com"
     green " 提示: 脚本安装过程中会升级内核，请勿生产环境使用"
     green "==============================================="
-    green "1. 安装wireguard"
+    green "1. 安装wireguard + udpspeeder + udp2raw"
     red "2. 删除wireguard"
-    green "3. 显示默认用户二维码"
-    green "4. 增加用户"
+    green "3. 增加用户"
     red "0. 退出"
     echo
     read -p "请选择:" num
@@ -338,10 +337,6 @@ function start_menu(){
         remove_wg
         ;;
         3)
-        content=$(cat /etc/wireguard/client.conf)
-        echo "${content}" | qrencode -o - -t UTF8
-        ;;
-        4)
         add_user
         ;;
         0)
