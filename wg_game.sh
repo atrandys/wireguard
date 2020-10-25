@@ -10,6 +10,11 @@ function red(){
     echo -e "\033[31m\033[01m$1\033[0m"
 }
 
+function randpwd(){
+    mpasswd=$(cat /dev/urandom | head -1 | md5sum | head -c 4)
+    echo ${mpasswd}  
+}
+
 function rand(){
     min=$1
     max=$(($2-$min+1))
@@ -220,13 +225,20 @@ PersistentKeepalive = 25
 EOF
 
 #增加自启动脚本
-cat > /etc/rc.d/init.d/autoudp<<-EOF
-#!/bin/sh
-#chkconfig: 2345 80 90
-#description:autoudp
-cd /usr/src/udp
-nohup ./speederv2 -s -l127.0.0.1:23333 -r127.0.0.1:$port -f2:4 --mode 0 --timeout 0 >speeder.log 2>&1 &
-nohup ./run.sh ./udp2raw -s -l0.0.0.0:$udpport -r 127.0.0.1:23333  --raw-mode faketcp  -a -k $password >udp2raw.log 2>&1 &
+cat > /etc/systemd/system/autoudp.service<<-EOF
+[Unit]  
+Description=trojan  
+After=network.target  
+   
+[Service]  
+Type=simple  
+ExecStart=/usr/src/trojan/trojan -c "/usr/src/trojan/server.conf"  
+ExecReload=/bin/kill -HUP \$MAINPID
+Restart=on-failure
+RestartSec=1s
+   
+[Install]  
+WantedBy=multi-user.target
 EOF
 
 #设置脚本权限
@@ -311,6 +323,7 @@ function start_menu(){
         check_selinux
         install_wg
         config_wg
+	udp_install
         ;;
         2)
         remove_wg
