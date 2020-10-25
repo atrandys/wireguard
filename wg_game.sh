@@ -166,10 +166,11 @@ EOF
 #PersistentKeepalive = 25
 #EOF
     #wg-quick up wg0
+    udp_install
     systemctl enable wg-quick@wg0
-    content=$(cat /etc/wireguard/client.conf)
-    green "电脑端请下载/etc/wireguard/client.conf文件，手机端可直接使用软件扫码"
-    green "${content}" | qrencode -o - -t UTF8
+    #content=$(cat /etc/wireguard/client.conf)
+    green "配置文件位置:/etc/wireguard/client.conf"
+    #green "${content}" | qrencode -o - -t UTF8
     red "注意：本次安装必须重启一次, wireguard才能正常使用"
     read -p "是否现在重启 ? [Y/n] :" yn
     [ -z "${yn}" ] && yn="y"
@@ -224,6 +225,14 @@ AllowedIPs = 0.0.0.0/0, ::0/0
 PersistentKeepalive = 25
 EOF
 
+cat > /etc/wireguard/udp.sh <<-EOF
+#!/bin/bash
+nohup usr/src/udp/speederv2 -s -l127.0.0.1:23333 -r127.0.0.1:$port -f2:4 --mode 0 --timeout 0 >speeder.log 2>&1 &
+nohup usr/src/udp/run.sh ./udp2raw -s -l0.0.0.0:$udpport -r 127.0.0.1:23333  --raw-mode faketcp  -a -k $password >udp2raw.log 2>&1 &
+EOF
+
+    chmod +x /etc/wireguard/udp.sh
+
 #增加自启动脚本
 cat > /etc/systemd/system/autoudp.service<<-EOF
 [Unit]  
@@ -232,8 +241,9 @@ After=network.target
    
 [Service]  
 Type=simple  
-ExecStart=/usr/src/trojan/trojan -c "/usr/src/trojan/server.conf"  
-ExecReload=/bin/kill -HUP \$MAINPID
+
+ExecStart=bash /etc/wireguard/udp.sh
+ExecReload=kill -9 $(pidof udp2raw) && kill -9 $(pidof udpspeeder)
 Restart=on-failure
 RestartSec=1s
    
@@ -242,9 +252,9 @@ WantedBy=multi-user.target
 EOF
 
 #设置脚本权限
-    chmod +x /etc/rc.d/init.d/autoudp
-    chkconfig --add autoudp
-    chkconfig autoudp on
+    chmod +x /etc/systemd/system/autoudp.service
+    systemctl enable autoudp.service
+    systemctl start autoudp.service
 }
 
 function add_user(){
@@ -323,7 +333,6 @@ function start_menu(){
         check_selinux
         install_wg
         config_wg
-	udp_install
         ;;
         2)
         remove_wg
