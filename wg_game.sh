@@ -240,10 +240,9 @@ Description=autoudp
 After=network.target  
    
 [Service]  
-Type=simple  
-
+Type=forking
 ExecStart=/etc/wireguard/udp.sh
-ExecReload=kill -9 \$(pidof udp2raw) && kill -9 \$(pidof udpspeeder)
+ExecReload=/bin/kill -9 \$(pidof udp2raw) && /bin/kill -9 \$(pidof udpspeeder)
 Restart=on-failure
 RestartSec=1s
    
