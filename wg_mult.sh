@@ -71,6 +71,8 @@ function install_wg(){
         yum-config-manager --setopt=centosplus.includepkgs=kernel-plus --enablerepo=centosplus --save
         sed -e 's/^DEFAULTKERNEL=kernel$/DEFAULTKERNEL=kernel-plus/' -i /etc/sysconfig/kernel
         yum install -y kernel-plus wireguard-tools
+	sed -i "s/GRUB_DEFAULT=saved/GRUB_DEFAULT=0/" /etc/default/grub
+        grub2-mkconfig -o /boot/grub2/grub.cfg
         systemctl stop firewalld
         systemctl disable firewalld
         install_tools "yum"
@@ -79,6 +81,8 @@ function install_wg(){
         yum-config-manager --setopt=centosplus.includepkgs="kernel-plus, kernel-plus-*" --setopt=centosplus.enabled=1 --save
         sed -e 's/^DEFAULTKERNEL=kernel-core$/DEFAULTKERNEL=kernel-plus-core/' -i /etc/sysconfig/kernel
         yum install -y kernel-plus wireguard-tools
+	sed -i "s/GRUB_DEFAULT=saved/GRUB_DEFAULT=0/" /etc/default/grub
+        grub2-mkconfig -o /boot/grub2/grub.cfg
         systemctl stop firewalld
         systemctl disable firewalld
         install_tools "yum"
