@@ -82,10 +82,13 @@ function install_wg(){
         systemctl disable firewalld
         install_tools "yum"
     elif [ "$RELEASE" == "centos" ] && [ "$VERSION" == "8" ]; then
-        yum install -y yum-utils epel-release
-        yum-config-manager --setopt=centosplus.includepkgs="kernel-plus, kernel-plus-*" --setopt=centosplus.enabled=1 --save
-        sed -e 's/^DEFAULTKERNEL=kernel-core$/DEFAULTKERNEL=kernel-plus-core/' -i /etc/sysconfig/kernel
-        yum install -y kernel-plus wireguard-tools
+        #yum install -y yum-utils epel-release
+        #yum-config-manager --setopt=centosplus.includepkgs="kernel-plus, kernel-plus-*" --setopt=centosplus.enabled=1 --save
+        #sed -e 's/^DEFAULTKERNEL=kernel-core$/DEFAULTKERNEL=kernel-plus-core/' -i /etc/sysconfig/kernel
+        #yum install -y kernel-plus wireguard-tools
+	#doesn't work sometimes,use the method 2 via ELRepo's pre-built module
+	yum install elrepo-release epel-release
+	yum install kmod-wireguard wireguard-tools
 	sed -i "s/GRUB_DEFAULT=saved/GRUB_DEFAULT=0/" /etc/default/grub
         grub2-mkconfig -o /boot/grub2/grub.cfg
         systemctl stop firewalld
