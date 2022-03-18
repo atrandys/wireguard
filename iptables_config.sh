@@ -155,7 +155,7 @@ do
     echo "7. Remove all rules"
     echo "0. exit"
     echo
-    read -p "请输入数字:" num
+    read -p "Please enter a number:" num
     case "$num" in
     	1)
 	config_default
