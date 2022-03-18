@@ -134,6 +134,7 @@ EOF
     green "Download the /etc/wireguard/client.conf file on your computer. You can scan the code directly on your mobile phone."
     green "${content}" | qrencode -o - -t UTF8
     red "Note: This installation must be restarted once before the wireguard can be used properly"
+    echo $port
     read -p "Restart Now ? [Y/n] :" yn
     [ -z "${yn}" ] && yn="y"
     if [[ $yn == [Yy] ]]; then
