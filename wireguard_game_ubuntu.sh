@@ -40,7 +40,7 @@ wireguard_install(){
     c1=$(cat cprivatekey)
     c2=$(cat cpublickey)
     serverip=$(curl ipv4.icanhazip.com)
-    port=$(rand 10000 60000)
+    port=1111
     eth=$(ls /sys/class/net | awk '/^e/{print}')
 
 sudo cat > /etc/wireguard/wg0.conf <<-EOF
@@ -50,7 +50,7 @@ Address = 10.0.0.1/24
 PostUp   = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o $eth -j MASQUERADE
 PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o $eth -j MASQUERADE
 ListenPort = $port
-DNS = 8.8.8.8
+DNS = 1.1.1.1
 MTU = 1420
 
 [Peer]
@@ -111,7 +111,7 @@ PrivateKey = $c1
 PostUp = mshta vbscript:CreateObject("WScript.Shell").Run("cmd /c route add $serverip mask 255.255.255.255 $ugateway METRIC 20 & start /b c:/udp/speederv2.exe -c -l127.0.0.1:2090 -r127.0.0.1:2091 -f2:4 --mode 0 --timeout 0 & start /b c:/udp/udp2raw.exe -c -r$serverip:$udpport -l127.0.0.1:2091 --raw-mode faketcp -k $password",0)(window.close)
 PostDown = route delete $serverip && taskkill /im udp2raw.exe /f && taskkill /im speederv2.exe /f
 Address = 10.0.0.2/24 
-DNS = 8.8.8.8
+DNS = 1.1.1.1
 MTU = 1420
 
 [Peer]
@@ -125,7 +125,7 @@ cat > /etc/wireguard/client/client_noudp.conf <<-EOF
 [Interface]
 PrivateKey = $c1
 Address = 10.0.0.2/24 
-DNS = 8.8.8.8
+DNS = 1.1.1.1
 MTU = 1420
 [Peer]
 PublicKey = $s2
