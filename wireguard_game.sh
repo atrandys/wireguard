@@ -144,7 +144,7 @@ wireguard_install(){
     chmod 777 -R /etc/wireguard
     systemctl stop firewalld
     systemctl disable firewalld
-    apt install -y iptables-services 
+    apt install -y iptables 
     systemctl enable iptables 
     systemctl start iptables 
     iptables -P INPUT ACCEPT

@@ -4,7 +4,7 @@
 config_default(){
     systemctl stop firewalld
     systemctl disable firewalld
-    apt install -y iptables-services
+    apt install -y iptables
     systemctl start iptables
     systemctl enable iptables
     ssh_port=$(awk '$1=="Port" {print $2}' /etc/ssh/sshd_config)
@@ -13,6 +13,7 @@ config_default(){
     else
         iptables -A INPUT -p tcp -m tcp --dport ${ssh_port} -j ACCEPT
     fi
+    iptables -A INPUT -p tcp --tcp-flags RST RST --sport 443 -j DROP
     iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
     iptables -A INPUT -i lo -j ACCEPT
     iptables -P INPUT DROP
@@ -22,7 +23,7 @@ config_default(){
     echo "Initial Settings Completed"
 }
 
-#禁止邮箱
+#No Mailbox
 config_mail(){
     iptables -A FORWARD -p tcp -m multiport --dports 24,25,26,50,57,105,106,109,110,143 -j REJECT --reject-with tcp-reset
     iptables -A FORWARD -p udp -m multiport --dports 24,25,26,50,57,105,106,109,110,143 -j DROP
@@ -32,7 +33,7 @@ config_mail(){
     echo "Mailbox completion prohibited"
 }
 
-#禁止关键字
+#No Keywords
 config_keyword(){
     iptables -A FORWARD -m string --string "netflix.com" --algo bm -j DROP
     iptables -A FORWARD -m string --string "tumblr.com" --algo bm -j DROP
@@ -92,7 +93,7 @@ config_keyword(){
     echo "Keyword completion prohibited"
 }
 
-#开放自定义端口
+#Open Custom Port
 config_port(){
     echo "Open one custom port segment"
     read -p "Enter Start Port：" start_port
@@ -103,7 +104,7 @@ config_port(){
     echo "Open Port Completed"
 }
 
-#连接数限制
+#Limit number of connections
 config_conn(){
     echo "Limit the number of connections to one port segment"
     read -p "Enter Start Port：" start_conn
@@ -115,7 +116,7 @@ config_conn(){
     echo "Limit number of connections completed"
 }
 
-#IP限速
+#IP speed limit
 config_IP(){
     echo "IP speed limit, 10.0.0.2-254, 100/sec limit"
     for ((i=2; i<=254; i ++))
@@ -127,7 +128,7 @@ config_IP(){
     echo "IP speed limit complete"
 }
 
-#清空规则
+#rule of emptying
 config_clear(){
     iptables -P INPUT ACCEPT
     iptables -P FORWARD ACCEPT
