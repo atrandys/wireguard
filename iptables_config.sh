@@ -1,10 +1,10 @@
 #!/bin/bash
 
-#开放ssh端口、回环、外网、默认策略
+#Open ssh port, loopback, outbound, default policy
 config_default(){
     systemctl stop firewalld
     systemctl disable firewalld
-    yum install -y iptables-services
+    apt install -y iptables-services
     systemctl start iptables
     systemctl enable iptables
     ssh_port=$(awk '$1=="Port" {print $2}' /etc/ssh/sshd_config)
@@ -19,7 +19,7 @@ config_default(){
     iptables -P FORWARD ACCEPT
     iptables -P OUTPUT ACCEPT
     service iptables save
-    echo "初始配置完成"
+    echo "Initial Settings Completed"
 }
 
 #禁止邮箱
@@ -29,14 +29,14 @@ config_mail(){
     iptables -A FORWARD -p tcp -m multiport --dports 158,209,218,220,465,587,993,995,1109,60177,60179 -j REJECT --reject-with tcp-reset
     iptables -A FORWARD -p udp -m multiport --dports 158,209,218,220,465,587,993,995,1109,60177,60179 -j DROP
     service iptables save
-    echo "禁止邮箱完毕"
+    echo "Mailbox completion prohibited"
 }
 
 #禁止关键字
 config_keyword(){
     iptables -A FORWARD -m string --string "netflix.com" --algo bm -j DROP
     iptables -A FORWARD -m string --string "tumblr.com" --algo bm -j DROP
-    iptables -A FORWARD -m string --string "facebook.com.com" --algo bm -j DROP
+    iptables -A FORWARD -m string --string "facebook.com" --algo bm -j DROP
     iptables -A FORWARD -m string --string "instagram.com" --algo bm -j DROP
     iptables -A FORWARD -m string --string "pixiv.net" --algo bm -j DROP
     iptables -A FORWARD -m string --string "whatsapp.com" --algo bm -j DROP
@@ -89,42 +89,42 @@ config_keyword(){
     iptables -A FORWARD -m string --string "peacehall.com" --algo bm -j DROP
     iptables -A FORWARD -m string --string "twister" --algo bm -j DROP
     service iptables save
-    echo "禁止关键字完毕"
+    echo "Keyword completion prohibited"
 }
 
 #开放自定义端口
 config_port(){
-    echo "开放一个自定义的端口段"
-    read -p "输入开始端口：" start_port
-    read -p "输入结束端口：" stop_port
+    echo "Open one custom port segment"
+    read -p "Enter Start Port：" start_port
+    read -p "Enter End Port：" stop_port
     iptables -A INPUT -p tcp -m tcp --dport ${start_port}:${stop_port} -j ACCEPT
     iptables -A INPUT -p udp -m udp --dport ${start_port}:${stop_port} -j ACCEPT
     service iptables save
-    echo "开放端口完毕"
+    echo "Open Port Completed"
 }
 
 #连接数限制
 config_conn(){
-    echo "限制一个端口段的连接数"
-    read -p "输入开始端口：" start_conn
-    read -p "输入结束端口：" stop_conn
-    read -p "输入每个ip允许的连接数：" conn_num
+    echo "Limit the number of connections to one port segment"
+    read -p "Enter Start Port：" start_conn
+    read -p "Enter End Port：" stop_conn
+    read -p "Enter the number of connections allowed per ip：" conn_num
     iptables -A INPUT -p tcp --dport ${start_conn}:${stop_conn} -m connlimit --connlimit-above ${conn_num} -j DROP
     iptables -A INPUT -p udp --dport ${start_conn}:${stop_conn} -m connlimit --connlimit-above ${conn_num} -j DROP
     service iptables save
-    echo "限制连接数完毕"
+    echo "Limit number of connections completed"
 }
 
 #IP限速
 config_IP(){
-    echo "限制IP的速度，从10.0.0.2-254，限制100/sec"
+    echo "IP speed limit, 10.0.0.2-254, 100/sec limit"
     for ((i=2; i<=254; i ++))
     do
 	iptables -I FORWARD -d 10.0.0.$i/32 -j DROP
     	iptables -I FORWARD -d 10.0.0.$i/32 -m limit --limit 100/sec -j ACCEPT 
     done
     service iptables save
-    echo "限制IP速度完毕"
+    echo "IP speed limit complete"
 }
 
 #清空规则
@@ -133,7 +133,7 @@ config_clear(){
     iptables -P FORWARD ACCEPT
     iptables -F
     service iptables save
-    echo "清除规则完毕"
+    echo "Rule removal complete."
 }
 
 #start
@@ -141,19 +141,19 @@ start_menu(){
 while [ 1 ] 
 do
     echo "========================="
-    echo " 介绍：适用于CentOS7"
-    echo " 作者：atrandys"
-    echo " 网站：www.atrandys.com"
+    echo " Introduction：Apply to Ubuntu"
+    echo " author：atrandys"
+    echo " Web site：www.atrandys.com"
     echo " Youtube：atrandys"
     echo "========================="
-    echo "1. 开启ssh（必须）"
-    echo "2. 禁止邮箱"
-    echo "3. 禁止常用关键字"
-    echo "4. 开放自定义端口"
-    echo "5. 连接数限制"
-    echo "6. ip限速"
-    echo "7. 清除所有规则"
-    echo "0. 退出"
+    echo "1. Turn on ssh (required)"
+    echo "2. No Mailbox"
+    echo "3. Do not use keywords frequently"
+    echo "4. Open Custom Port"
+    echo "5. Limit number of connections"
+    echo "6. ip speed limit"
+    echo "7. Remove all rules"
+    echo "0. exit"
     echo
     read -p "请输入数字:" num
     case "$num" in
@@ -183,7 +183,7 @@ do
 	;;
 	*)
 	clear
-	echo "请输入正确数字"
+	echo "Please enter a valid number"
 	sleep 5s
 	start_menu
 	;;

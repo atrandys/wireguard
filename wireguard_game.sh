@@ -16,18 +16,18 @@ fi
 #更新内核
 update_kernel(){
 
-    yum -y install epel-release wget curl
-    sed -i "0,/enabled=0/s//enabled=1/" /etc/yum.repos.d/epel.repo
-    yum remove -y kernel-devel
+    apt -y install epel-release wget curl
+    sed -i "0,/enabled=0/s//enabled=1/" /etc/apt.repos.d/epel.repo
+    apt remove -y kernel-devel
     rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
     rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm
-    yum --disablerepo="*" --enablerepo="elrepo-kernel" list available
-    yum -y --enablerepo=elrepo-kernel install kernel-ml
+    apt --disablerepo="*" --enablerepo="elrepo-kernel" list available
+    apt -y --enablerepo=elrepo-kernel install kernel-ml
     sed -i "s/GRUB_DEFAULT=saved/GRUB_DEFAULT=0/" /etc/default/grub
     grub2-mkconfig -o /boot/grub2/grub.cfg
     wget https://elrepo.org/linux/kernel/el7/x86_64/RPMS/kernel-ml-devel-4.19.1-1.el7.elrepo.x86_64.rpm
     rpm -ivh kernel-ml-devel-4.19.1-1.el7.elrepo.x86_64.rpm
-    yum -y --enablerepo=elrepo-kernel install kernel-ml-devel
+    apt -y --enablerepo=elrepo-kernel install kernel-ml-devel
     read -p "需要重启VPS，再次执行脚本选择安装wireguard，是否现在重启 ? [Y/n] :" yn
 	[ -z "${yn}" ] && yn="y"
 	if [[ $yn == [Yy] ]]; then
@@ -50,12 +50,12 @@ randpwd(){
 }
 
 wireguard_update(){
-    yum update -y wireguard-dkms wireguard-tools
+    apt update -y wireguard-dkms wireguard-tools
     echo -e "\033[37;41m更新完成\033[0m"
 }
 
 wireguard_remove(){
-    yum remove -y wireguard-dkms wireguard-tools
+    apt remove -y wireguard-dkms wireguard-tools
     rm -rf /etc/wireguard/
     rm -f /etc/rc.d/init.d/autoudp
     echo -e "\033[37;41m卸载完成，建议重启服务器\033[0m"
@@ -126,9 +126,9 @@ EOF
 
 #centos7安装wireguard
 wireguard_install(){
-    curl -Lo /etc/yum.repos.d/wireguard.repo https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-7/jdoss-wireguard-epel-7.repo
-    yum install -y dkms gcc-c++ gcc-gfortran glibc-headers glibc-devel libquadmath-devel libtool systemtap systemtap-devel
-    yum -y install wireguard-dkms wireguard-tools
+    curl -Lo /etc/apt.repos.d/wireguard.repo https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-7/jdoss-wireguard-epel-7.repo
+    apt install -y dkms gcc-c++ gcc-gfortran glibc-headers glibc-devel libquadmath-devel libtool systemtap systemtap-devel
+    apt -y install wireguard-dkms wireguard-tools
     mkdir /etc/wireguard
     mkdir /etc/wireguard/client
     cd /etc/wireguard
@@ -144,7 +144,7 @@ wireguard_install(){
     chmod 777 -R /etc/wireguard
     systemctl stop firewalld
     systemctl disable firewalld
-    yum install -y iptables-services 
+    apt install -y iptables-services 
     systemctl enable iptables 
     systemctl start iptables 
     iptables -P INPUT ACCEPT

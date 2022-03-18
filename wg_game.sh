@@ -72,25 +72,25 @@ function install_tools(){
 function install_wg(){
     check_release
     if [ "$RELEASE" == "centos" ] && [ "$VERSION" == "7" ]; then
-        yum install -y yum-utils epel-release
-        yum-config-manager --setopt=centosplus.includepkgs=kernel-plus --enablerepo=centosplus --save
+        apt install -y apt-utils epel-release
+        apt-config-manager --setopt=centosplus.includepkgs=kernel-plus --enablerepo=centosplus --save
         sed -e 's/^DEFAULTKERNEL=kernel$/DEFAULTKERNEL=kernel-plus/' -i /etc/sysconfig/kernel
-        yum install -y kernel-plus wireguard-tools
+        apt install -y kernel-plus wireguard-tools
 	sed -i "s/GRUB_DEFAULT=saved/GRUB_DEFAULT=0/" /etc/default/grub
         grub2-mkconfig -o /boot/grub2/grub.cfg
         systemctl stop firewalld
         systemctl disable firewalld
-        install_tools "yum"
+        install_tools "apt"
     elif [ "$RELEASE" == "centos" ] && [ "$VERSION" == "8" ]; then
-        yum install -y yum-utils epel-release
-        yum-config-manager --setopt=centosplus.includepkgs="kernel-plus, kernel-plus-*" --setopt=centosplus.enabled=1 --save
+        apt install -y apt-utils epel-release
+        apt-config-manager --setopt=centosplus.includepkgs="kernel-plus, kernel-plus-*" --setopt=centosplus.enabled=1 --save
         sed -e 's/^DEFAULTKERNEL=kernel-core$/DEFAULTKERNEL=kernel-plus-core/' -i /etc/sysconfig/kernel
-        yum install -y kernel-plus wireguard-tools
+        apt install -y kernel-plus wireguard-tools
 	sed -i "s/GRUB_DEFAULT=saved/GRUB_DEFAULT=0/" /etc/default/grub
         grub2-mkconfig -o /boot/grub2/grub.cfg
         systemctl stop firewalld
         systemctl disable firewalld
-        install_tools "yum"
+        install_tools "apt"
     elif [ "$RELEASE" == "ubuntu" ]; then
         if [ "$VERSION" == "12.04" ] || [ "$VERSION" == "16.04" ]; then
 	    red "=================="
@@ -297,7 +297,7 @@ function remove_wg(){
     if [ -d "/etc/wireguard" ]; then
         wg-quick down wg0
         if [ "$RELEASE" == "centos" ]; then
-            yum remove -y wireguard-dkms wireguard-tools
+            apt remove -y wireguard-dkms wireguard-tools
             rm -rf /etc/wireguard/
             green "卸载完成"
         elif [ "$RELEASE" == "ubuntu" ]; then
