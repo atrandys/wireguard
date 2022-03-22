@@ -60,11 +60,9 @@ function install_wg(){
         systemctl stop ufw
         systemctl disable ufw
 	apt-get install -y wget
-	wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-headers-5.8.15-050815-generic_5.8.15-050815.202010141131_amd64.deb
-	wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-headers-5.8.15-050815_5.8.15-050815.202010141131_all.deb
-	wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-image-unsigned-5.8.15-050815-generic_5.8.15-050815.202010141131_amd64.deb
-	wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-modules-5.8.15-050815-generic_5.8.15-050815.202010141131_amd64.deb
-	dpkg -i *.deb
+	apt install -y linux-headers-$(uname -r)
+	apt install -y linux-image-unsigned-$(uname -r)
+	apt install -y linux-modules-$(uname -r)
 	apt-get -y update
         #apt-get install -y software-properties-common
         apt-get install -y openresolv
@@ -75,7 +73,7 @@ function install_wg(){
         echo "deb http://deb.debian.org/debian buster-backports main" >> /etc/apt/sources.list
         #printf 'Package: *\nPin: release a=unstable\nPin-Priority: 90\n' > /etc/apt/preferences.d/limit-unstable
         apt update
-	apt install -y linux-image-5.8.0-0.bpo.2-cloud-amd64
+	apt install -y linux-image-$(uname -r)
 	apt install -y wireguard openresolv
 	#apt update
         #apt install -y wireguard
