@@ -48,7 +48,7 @@ EOF
 sudo chmod 755 /etc/init.d/wgwebstart
 sudo update-rc.d wgwebstart defaults
 
-read -p "输入域名：" domain
+read -p "Enter Domain Name：" domain
 
 docker create \
 --name subspace \
@@ -62,4 +62,4 @@ subspacecloud/subspace:latest
 
 sudo docker start subspace
 
-echo "安装完毕，使用浏览器访问域名，配置初始登录账号。"
+echo "Once installed, use a browser to access the domain and set up your initial logon account."
