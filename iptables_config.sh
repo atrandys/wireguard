@@ -141,6 +141,7 @@ config_clear(){
 start_menu(){
 while [ 1 ] 
 do
+    clear
     echo "========================="
     echo " Introduction：Apply to Ubuntu"
     echo " author：atrandys"
