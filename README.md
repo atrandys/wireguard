@@ -1,13 +1,9 @@
-### 关于
+### In connection with WireGuard
 
 
-#### _install.sh
-> centos版wireguard一键脚本 | centos 7
-#### _install_ubuntu.sh
-> ubuntu版wireguard一键脚本 | ubuntu >= 14.04
+#### wg_mult.sh
+> WireGuard one-touch script | Ubuntu , Debian
+
 #### _game.sh
-> centos版wireguard+udpspeeder+udp2raw一键脚本 | centos 7
-#### _game_ubuntu.sh
-> ubuntu版wireguard+udpspeeder+udp2raw一键脚本 | ubuntu >= 14.04
-
+> WireGuard udpspeeder udp2raw one-touch script | Ubuntu , Debian
 
