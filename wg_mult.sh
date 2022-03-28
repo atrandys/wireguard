@@ -61,10 +61,9 @@ function install_wg(){
         systemctl disable ufw
 	apt-get install -y wget
         apt-get install -y qrencode
-	apt install -y linux-headers-$(uname -r)-generic
         apt install -y linux-headers-$(uname -r)
-	apt install -y linux-image-unsigned-$(uname -r)-generic
-	apt install -y linux-modules-$(uname -r)-generic
+	apt install -y linux-image-unsigned-$(uname -r)
+	apt install -y linux-modules-$(uname -r)
 	apt-get -y update
         #apt-get install -y software-properties-common
         apt-get install -y openresolv
