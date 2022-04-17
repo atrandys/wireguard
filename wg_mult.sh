@@ -108,7 +108,7 @@ Address = 10.77.0.1/24
 PostUp   = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o $eth -j MASQUERADE
 PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o $eth -j MASQUERADE
 ListenPort = $port
-DNS = 1.1.1.1,1.0.0.1,8.8.8.8,8.8.4.4
+DNS = 94.140.14.14, 94.140.15.15, 1.1.1.1, 1.0.0.1, 8.8.8.8, 8.8.4.4, 9.9.9.9, 149.112.112.112
 MTU = 1420
 [Peer]
 PublicKey = $c2
@@ -119,7 +119,7 @@ cat > /etc/wireguard/client.conf <<-EOF
 [Interface]
 PrivateKey = $c1
 Address = 10.77.0.2/24 
-DNS = 1.1.1.1,1.0.0.1,8.8.8.8,8.8.4.4
+DNS = 94.140.14.14, 94.140.15.15, 1.1.1.1, 1.0.0.1, 8.8.8.8, 8.8.4.4, 9.9.9.9, 149.112.112.112
 MTU = 1420
 [Peer]
 PublicKey = $s2
