@@ -59,29 +59,22 @@ function install_wg(){
 	fi
         systemctl stop ufw
         systemctl disable ufw
-	apt-get install -y wget
-        apt-get install -y qrencode
-	wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-headers-5.8.15-050815-generic_5.8.15-050815.202010141131_amd64.deb
-	wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-headers-5.8.15-050815_5.8.15-050815.202010141131_all.deb
-	wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-image-unsigned-5.8.15-050815-generic_5.8.15-050815.202010141131_amd64.deb
-	wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-modules-5.8.15-050815-generic_5.8.15-050815.202010141131_amd64.deb
-	dpkg -i *.deb
-        apt -y update
-        apt install -y linux-headers-$(uname -r)
-	apt install -y linux-image-unsigned-$(uname -r)
-	apt install -y linux-modules-$(uname -r)
-	apt-get -y update
-        #apt-get install -y software-properties-common
+	    apt-get install -y wget qrencode
+        apt-get install -y linux-headers-$(uname -r)
+	    apt-get install -y linux-image-unsigned-$(uname -r)
+	    apt-get install -y linux-modules-$(uname -r)
+	    apt-get -y update
+        apt-get install -y software-properties-common
         apt-get install -y openresolv
-        #add-apt-repository -y ppa:wireguard/wireguard
+        add-apt-repository -y ppa:wireguard/wireguard
         apt-get install -y wireguard
         install_tools "apt-get"
     elif [ "$RELEASE" == "debian" ]; then
         echo "deb http://deb.debian.org/debian buster-backports main" >> /etc/apt/sources.list
         #printf 'Package: *\nPin: release a=unstable\nPin-Priority: 90\n' > /etc/apt/preferences.d/limit-unstable
         apt update
-	apt install -y linux-image-$(uname -r)
-	apt install -y wireguard openresolv
+	    apt install -y linux-image-$(uname -r)
+	    apt install -y wireguard openresolv
 	#apt update
         #apt install -y wireguard
         install_tools "apt"
