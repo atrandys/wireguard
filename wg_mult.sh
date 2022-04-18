@@ -59,7 +59,7 @@ function install_wg(){
 	fi
         systemctl stop ufw
         systemctl disable ufw
-	    apt-get install -y wget qrencode linux-headers-$(uname -r) linux-image-unsigned-$(uname -r) linux-modules-$(uname -r)
+        apt-get install -y wget qrencode linux-headers-$(uname -r) linux-image-unsigned-$(uname -r) linux-modules-$(uname -r)
 	    apt-get -y update
         apt-get install -y software-properties-common
         add-apt-repository -y ppa:wireguard/wireguard
