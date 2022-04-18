@@ -59,15 +59,11 @@ function install_wg(){
 	fi
         systemctl stop ufw
         systemctl disable ufw
-	    apt-get install -y wget qrencode
-        apt-get install -y linux-headers-$(uname -r)
-	    apt-get install -y linux-image-unsigned-$(uname -r)
-	    apt-get install -y linux-modules-$(uname -r)
+	    apt-get install -y wget qrencode linux-headers-$(uname -r) linux-image-unsigned-$(uname -r) linux-modules-$(uname -r)
 	    apt-get -y update
         apt-get install -y software-properties-common
-        apt-get install -y openresolv
         add-apt-repository -y ppa:wireguard/wireguard
-        apt-get install -y wireguard
+        apt install -y wireguard openresolv
         install_tools "apt-get"
     elif [ "$RELEASE" == "debian" ]; then
         echo "deb http://deb.debian.org/debian buster-backports main" >> /etc/apt/sources.list
