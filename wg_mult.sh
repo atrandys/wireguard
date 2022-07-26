@@ -48,6 +48,21 @@ function check_release(){
 
 }
 
+function install_tools(){
+    $1 install -y qrencode iptables iptables-services
+    systemctl enable iptables 
+    systemctl start iptables 
+    iptables -F 
+    iptables -X 
+    netfilter-persistent save 
+    netfilter-persistent reload
+    service iptables save
+    echo 1 > /proc/sys/net/ipv4/ip_forward
+    echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+    sysctl -p
+
+}
+
 function install_wg(){
     check_release
     if [ "$RELEASE" == "ubuntu" ]; then
@@ -59,20 +74,28 @@ function install_wg(){
 	fi
         systemctl stop ufw
         systemctl disable ufw
-        apt-get install -y wget qrencode linux-headers-$(uname -r) linux-image-unsigned-$(uname -r) linux-modules-$(uname -r)
-        apt-get -y update
-        apt-get install -y software-properties-common
+        apt install -y wget software-properties-common
+	wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-headers-5.8.15-050815-generic_5.8.15-050815.202010141131_amd64.deb
+        wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-headers-5.8.15-050815_5.8.15-050815.202010141131_all.deb
+        wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-image-unsigned-5.8.15-050815-generic_5.8.15-050815.202010141131_amd64.deb
+        wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-modules-5.8.15-050815-generic_5.8.15-050815.202010141131_amd64.deb
+        dpkg -i *.deb
+        rm -rf *.deb
+        apt -y update
+        apt -y upgrade
         add-apt-repository -y ppa:wireguard/wireguard
         apt install -y wireguard openresolv
-        install_tools "apt-get"
+        install_tools "apt"
     elif [ "$RELEASE" == "debian" ]; then
         echo "deb http://deb.debian.org/debian buster-backports main" >> /etc/apt/sources.list
-        #printf 'Package: *\nPin: release a=unstable\nPin-Priority: 90\n' > /etc/apt/preferences.d/limit-unstable
         apt update
-	    apt install -y linux-image-$(uname -r)
-	    apt install -y wireguard openresolv
-	#apt update
-        #apt install -y wireguard
+	wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-headers-5.8.15-050815-generic_5.8.15-050815.202010141131_amd64.deb
+        wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-headers-5.8.15-050815_5.8.15-050815.202010141131_all.deb
+        wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-image-unsigned-5.8.15-050815-generic_5.8.15-050815.202010141131_amd64.deb
+        wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-modules-5.8.15-050815-generic_5.8.15-050815.202010141131_amd64.deb
+        dpkg -i *.deb
+        rm -rf *.deb
+	apt install -y wireguard openresolv
         install_tools "apt"
     else
         red "=================="
@@ -92,7 +115,7 @@ function config_wg(){
     c1=$(cat cprivatekey)
     c2=$(cat cpublickey)
     serverip=$(curl ipv4.icanhazip.com)
-    port=1111
+    port=443
     eth=$(ls /sys/class/net| grep ^e | head -n1)
     chmod 777 -R /etc/wireguard
 
@@ -174,7 +197,7 @@ function remove_wg(){
     if [ -d "/etc/wireguard" ]; then
         wg-quick down wg0
         if [ "$RELEASE" == "ubuntu" ]; then
-            apt-get remove -y wireguard
+            apt remove -y wireguard
             rm -rf /etc/wireguard/
             green "Uninstall complete"
         elif [ "$RELEASE" == "debian" ]; then
