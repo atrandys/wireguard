@@ -75,27 +75,27 @@ function install_wg(){
         systemctl stop ufw
         systemctl disable ufw
         apt install -y wget software-properties-common
-	wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-headers-5.8.15-050815-generic_5.8.15-050815.202010141131_amd64.deb
-        wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-headers-5.8.15-050815_5.8.15-050815.202010141131_all.deb
-        wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-image-unsigned-5.8.15-050815-generic_5.8.15-050815.202010141131_amd64.deb
-        wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-modules-5.8.15-050815-generic_5.8.15-050815.202010141131_amd64.deb
+	wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.18.14/amd64/linux-headers-5.18.14-051814-generic_5.18.14-051814.202207231131_amd64.deb
+        wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.18.14/amd64/linux-headers-5.18.14-051814_5.18.14-051814.202207231131_all.deb
+        wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.18.14/amd64/linux-image-unsigned-5.18.14-051814-generic_5.18.14-051814.202207231131_amd64.deb
+        wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.18.14/amd64/linux-modules-5.18.14-051814-generic_5.18.14-051814.202207231131_amd64.deb
         dpkg -i *.deb
         rm -rf *.deb
         apt -y update
         apt -y upgrade
         add-apt-repository -y ppa:wireguard/wireguard
-        apt install -y wireguard openresolv
+        apt install -y wireguard openresolv qrencode
         install_tools "apt"
     elif [ "$RELEASE" == "debian" ]; then
         echo "deb http://deb.debian.org/debian buster-backports main" >> /etc/apt/sources.list
         apt update
-	wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-headers-5.8.15-050815-generic_5.8.15-050815.202010141131_amd64.deb
-        wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-headers-5.8.15-050815_5.8.15-050815.202010141131_all.deb
-        wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-image-unsigned-5.8.15-050815-generic_5.8.15-050815.202010141131_amd64.deb
-        wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.8.15/amd64/linux-modules-5.8.15-050815-generic_5.8.15-050815.202010141131_amd64.deb
+	wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.18.14/amd64/linux-headers-5.18.14-051814-generic_5.18.14-051814.202207231131_amd64.deb
+        wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.18.14/amd64/linux-headers-5.18.14-051814_5.18.14-051814.202207231131_all.deb
+        wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.18.14/amd64/linux-image-unsigned-5.18.14-051814-generic_5.18.14-051814.202207231131_amd64.deb
+        wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.18.14/amd64/linux-modules-5.18.14-051814-generic_5.18.14-051814.202207231131_amd64.deb
         dpkg -i *.deb
         rm -rf *.deb
-	apt install -y wireguard openresolv
+	apt install -y wireguard openresolv qrencode
         install_tools "apt"
     else
         red "=================="
