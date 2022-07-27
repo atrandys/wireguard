@@ -83,7 +83,6 @@ function install_wg(){
         rm -rf *.deb
         apt -y update
         apt -y upgrade
-        add-apt-repository -y ppa:wireguard/wireguard
         apt install -y wireguard openresolv qrencode
         install_tools "apt"
     elif [ "$RELEASE" == "debian" ]; then
