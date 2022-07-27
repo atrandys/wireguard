@@ -75,12 +75,7 @@ function install_wg(){
         systemctl stop ufw
         systemctl disable ufw
         apt install -y wget software-properties-common
-	wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.17.15/amd64/linux-headers-5.17.15-051715-generic_5.17.15-051715.202206141358_amd64.deb
-        wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.17.15/amd64/linux-headers-5.17.15-051715_5.17.15-051715.202206141358_all.deb
-        wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.17.15/amd64/linux-image-unsigned-5.17.15-051715-generic_5.17.15-051715.202206141358_amd64.deb
-        wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.17.15/amd64/linux-modules-5.17.15-051715-generic_5.17.15-051715.202206141358_amd64.deb
-        dpkg -i *.deb
-        rm -rf *.deb
+	apt install -y linux-headers-$(uname -r) linux-image-unsigned-$(uname -r) linux-modules-$(uname -r)
         apt -y update
         apt -y upgrade
         apt install -y wireguard openresolv qrencode
